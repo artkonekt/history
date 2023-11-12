@@ -15,8 +15,8 @@ declare(strict_types=1);
 namespace Konekt\History\Tests;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Konekt\History\Providers\ModuleServiceProvider;
 use Konekt\Concord\ConcordServiceProvider;
+use Konekt\History\Providers\ModuleServiceProvider;
 use Konekt\LaravelMigrationCompatibility\LaravelMigrationCompatibilityProvider;
 use Orchestra\Testbench\TestCase as Orchestra;
 
