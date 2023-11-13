@@ -30,11 +30,17 @@ class Diff implements Arrayable
         }
     }
 
-    public static function fromModel(Model $model): self
+    public static function fromModel(Model $model, array $ignore = ['id', 'created_at', 'updated_at']): self
     {
         $changes = [];
-        foreach ($model->getChanges() as $field => $newValue) {
-            $changes[$field] = ['n' => $newValue];
+        $changedAttributes = $model->getChanges();
+        if (empty($changedAttributes) && $model->wasRecentlyCreated) {
+            $changedAttributes = $model->getOriginal();
+        }
+        foreach ($changedAttributes as $field => $newValue) {
+            if (!in_array($field, $ignore)) {
+                $changes[$field] = ['n' => $newValue];
+            }
         }
 
         return new self($changes);
@@ -102,7 +108,17 @@ class Diff implements Arrayable
     {
         return Arr::mapWithKeys(
             $this->changes,
-            fn (Change $change, string $field) => [$field => ['o' => $change->old, 'n' => $change->new]],
+            function (Change $change, string $field) {
+                $values = [];
+                if (!$change->old instanceof Undefined) {
+                    $values['o'] = $change->old;
+                }
+                if (!$change->new instanceof Undefined) {
+                    $values['n'] = $change->new;
+                }
+
+                return [$field => $values];
+            },
         );
     }
 }

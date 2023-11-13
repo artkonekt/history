@@ -22,6 +22,8 @@ interface ModelHistoryEvent
 
     public function summary(): string;
 
+    public function comment(): ?string;
+
     public function isASingleFieldChange(): bool;
 
     public function isNoFieldChangeEntry(): bool;

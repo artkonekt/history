@@ -16,19 +16,8 @@ namespace Konekt\History\Diff;
 
 final class Undefined
 {
-    public const STRINGVAL = '::uNdEf::';
-
-    public function __toString(): string
-    {
-        return self::STRINGVAL;
-    }
-
     public static function valueOrUndef(array $from, string $key): mixed
     {
-        if (array_key_exists($key, $from)) {
-            return self::STRINGVAL === $from[$key] ? new self() : $from[$key];
-        }
-
-        return new self();
+        return array_key_exists($key, $from) ? $from[$key] : new self();
     }
 }

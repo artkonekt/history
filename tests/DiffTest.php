@@ -117,19 +117,11 @@ class DiffTest extends PhpUnitTestCase
     }
 
     /** @test */
-    public function undefined_values_are_saved_as_string()
+    public function undefined_values_are_not_present_when_converting_to_array()
     {
         $diff = new Diff(['field' => ['n' => 'Something']]);
 
-        $this->assertEquals(Undefined::STRINGVAL, $diff->toArray()['field']['o']);
-    }
-
-    /** @test */
-    public function it_deserializes_undefined_values_into_undefined_objects()
-    {
-        $diff = new Diff(['field' => ['n' => 'Something', 'o' => Undefined::STRINGVAL]]);
-
-        $this->assertInstanceOf(Undefined::class, $diff->old('field'));
+        $this->assertArrayNotHasKey('o', $diff->toArray()['field']);
     }
 
     /** @test */

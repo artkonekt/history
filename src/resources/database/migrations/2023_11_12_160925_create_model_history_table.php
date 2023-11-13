@@ -20,6 +20,8 @@ return new class () extends Migration {
             $table->timestamp('happened_at');
             $table->timestamps();
 
+            $table->index('happened_at');
+
             $table->foreign('user_id')
                 ->references('id')
                 ->on('users');
