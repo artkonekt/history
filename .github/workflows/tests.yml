@@ -26,17 +26,17 @@ jobs:
         env:
           TEST_DB_ENGINE: sqlite
       - name: Run Tests [mysql 5.7]
-        run: php vendor/bin/phpunit --testdox
+        run: php vendor/bin/phpunit --testdox --stop-on-error --display-errors
         env:
           TEST_DB_ENGINE: mysql
           TEST_DB_PORT: ${{ job.services.mysql.ports[3306] }}
       - name: Run Tests [mysql 8.0]
-        run: php vendor/bin/phpunit --testdox
+        run: php vendor/bin/phpunit --testdox --stop-on-error --display-errors
         env:
           TEST_DB_ENGINE: mysql
           TEST_DB_PORT: ${{ job.services.mysql8.ports[3306] }}
       - name: Run Tests [postgres]
-        run: php vendor/bin/phpunit --testdox
+        run: php vendor/bin/phpunit --testdox --stop-on-error --display-errors
         env:
           TEST_DB_ENGINE: pgsql
           TEST_DB_PORT: ${{ job.services.postgres.ports[5432] }}
