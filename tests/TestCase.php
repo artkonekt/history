@@ -14,7 +14,6 @@ declare(strict_types=1);
 
 namespace Konekt\History\Tests;
 
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Artisan;
 use Konekt\Concord\ConcordServiceProvider;
