@@ -35,7 +35,8 @@ class ModelDiffTest extends TestCase
         $this->assertEmpty(
             array_diff(
                 ['description', 'status', 'assigned_to'],
-                array_keys($diff->changes()
+                array_keys(
+                    $diff->changes()
                 )
             )
         );

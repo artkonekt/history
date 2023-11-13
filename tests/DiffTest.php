@@ -143,7 +143,6 @@ class DiffTest extends PhpUnitTestCase
         $this->assertCount(1, $diff->changes());
         $this->assertEquals('to-do', $diff->old('status'));
         $this->assertEquals('in-progress', $diff->new('status'));
-
     }
 
     /** @test */

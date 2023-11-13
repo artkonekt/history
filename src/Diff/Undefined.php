@@ -18,6 +18,11 @@ final class Undefined
 {
     public const STRINGVAL = '::uNdEf::';
 
+    public function __toString(): string
+    {
+        return self::STRINGVAL;
+    }
+
     public static function valueOrUndef(array $from, string $key): mixed
     {
         if (array_key_exists($key, $from)) {
@@ -25,10 +30,5 @@ final class Undefined
         }
 
         return new self();
-    }
-
-    public function __toString(): string
-    {
-        return self::STRINGVAL;
     }
 }
