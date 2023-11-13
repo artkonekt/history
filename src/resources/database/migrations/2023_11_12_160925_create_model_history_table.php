@@ -15,7 +15,7 @@ return new class () extends Migration {
             $table->ipAddress()->nullable();
             $table->string('user_agent')->nullable();
             $table->morphs('model');
-            $table->json('diff');
+            $table->json('diff')->default('{}');
             $table->text('comment')->nullable();
             $table->timestamp('happened_at');
             $table->timestamps();

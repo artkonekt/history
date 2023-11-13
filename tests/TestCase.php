@@ -14,7 +14,9 @@ declare(strict_types=1);
 
 namespace Konekt\History\Tests;
 
+use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Artisan;
 use Konekt\Concord\ConcordServiceProvider;
 use Konekt\History\Providers\ModuleServiceProvider;
 use Konekt\LaravelMigrationCompatibility\LaravelMigrationCompatibilityProvider;
@@ -76,7 +78,13 @@ abstract class TestCase extends Orchestra
      */
     protected function setUpDatabase($app)
     {
-        \Artisan::call('migrate', ['--force' => true]);
+        $app['db']->connection()->getSchemaBuilder()->create('users', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('email');
+            $table->timestamps();
+        });
+
+        Artisan::call('migrate', ['--force' => true]);
     }
 
     /**
