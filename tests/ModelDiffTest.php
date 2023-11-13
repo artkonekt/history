@@ -14,7 +14,6 @@ declare(strict_types=1);
 
 namespace Konekt\History\Tests;
 
-use Konekt\History\Diff\Change;
 use Konekt\History\Diff\Diff;
 use Konekt\History\Diff\Undefined;
 use Konekt\History\Tests\Dummies\SampleTask;
