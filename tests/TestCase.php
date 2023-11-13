@@ -14,7 +14,7 @@ declare(strict_types=1);
 
 namespace Konekt\History\Tests;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Artisan;
 use Konekt\Concord\ConcordServiceProvider;
 use Konekt\History\Providers\ModuleServiceProvider;
@@ -23,8 +23,6 @@ use Orchestra\Testbench\TestCase as Orchestra;
 
 abstract class TestCase extends Orchestra
 {
-    use RefreshDatabase;
-
     protected function setUp(): void
     {
         parent::setUp();
@@ -33,7 +31,7 @@ abstract class TestCase extends Orchestra
     }
 
     /**
-     * @param \Illuminate\Foundation\Application $app
+     * @param Application $app
      *
      * @return array
      */
@@ -48,7 +46,7 @@ abstract class TestCase extends Orchestra
     /**
      * Set up the environment.
      *
-     * @param \Illuminate\Foundation\Application $app
+     * @param Application $app
      */
     protected function getEnvironmentSetUp($app)
     {
@@ -70,17 +68,12 @@ abstract class TestCase extends Orchestra
         }
     }
 
-    /**
-     * Set up the database.
-     *
-     * @param \Illuminate\Foundation\Application $app
-     */
-    protected function setUpDatabase($app)
+    protected function setUpDatabase(Application $app): void
     {
         Artisan::call('migrate', ['--force' => true]);
     }
 
-    protected function defineDatabaseMigrations()
+    protected function defineDatabaseMigrations(): void
     {
         $this->loadLaravelMigrations();
     }
