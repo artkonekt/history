@@ -18,12 +18,15 @@ use Illuminate\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Carbon;
+use Konekt\Enum\Eloquent\CastsEnums;
 use Konekt\History\Contracts\ModelHistoryEvent as ModelHistoryEventContract;
 use Konekt\History\Diff\Diff;
 
 /**
  * @property int $id
  * @property int $user_id
+ * @property Via $via
+ * @property string|null $scene
  * @property string|null $ip_address
  * @property string|null $user_agent
  * @property int $model_id
@@ -39,9 +42,15 @@ use Konekt\History\Diff\Diff;
  */
 class ModelHistoryEvent extends Model implements ModelHistoryEventContract
 {
+    use CastsEnums;
+
     protected $table = 'model_history';
 
     protected $guarded = ['id', 'created_at', 'updated_at'];
+
+    protected $enums = [
+        'via' => 'ViaProxy@enumClass'
+    ];
 
     protected ?Diff $_diffCache = null;
 

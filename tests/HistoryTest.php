@@ -5,7 +5,7 @@ declare(strict_types=1);
 /**
  * Contains the HistoryTest class.
  *
- * @copyright   Copyright (c) 2023 Vanilo UG
+ * @copyright   Copyright (c) 2023 Attila Fulop
  * @author      Attila Fulop
  * @license     MIT
  * @since       2023-11-13
@@ -16,6 +16,9 @@ namespace Konekt\History\Tests;
 
 use Konekt\History\History;
 use Konekt\History\Models\ModelHistoryEvent;
+use Konekt\History\Models\Via;
+use Konekt\History\Tests\Dummies\SampleJob;
+use Konekt\History\Tests\Dummies\SampleJobWithDisplayName;
 use Konekt\History\Tests\Dummies\SampleTask;
 
 class HistoryTest extends TestCase
@@ -58,5 +61,40 @@ class HistoryTest extends TestCase
         $this->assertTrue($event->isACommentOnlyEntry());
         $this->assertEmpty($event->diff()->changes());
         $this->assertEquals('Has timed out waiting', $event->comment());
+    }
+
+    /** @test */
+    public function it_detects_if_it_was_run_via_cli()
+    {
+        $task = SampleTask::create(['title' => 'Detect Via', 'status' => 'todo']);
+
+        $event = History::begin($task);
+
+        $this->assertInstanceOf(Via::class, $event->via);
+        $this->assertEquals(Via::CLI(), $event->via);
+    }
+
+    /** @test */
+    public function it_detects_if_it_was_run_in_a_queued_job()
+    {
+        $task = SampleTask::create(['title' => 'In A Queue', 'status' => 'in-progress']);
+        SampleJob::dispatch($task);
+
+        $event = History::of($task)->get()->first();
+
+        $this->assertEquals(Via::QUEUE(), $event->via);
+        $this->assertEquals(SampleJob::class, $event->scene);
+    }
+
+    /** @test */
+    public function it_uses_the_display_name_of_a_queued_job_if_available()
+    {
+        $task = SampleTask::create(['title' => 'In A Nice Queue Job', 'status' => 'in-progress']);
+        SampleJobWithDisplayName::dispatch($task);
+
+        $event = History::of($task)->get()->first();
+
+        $this->assertEquals(Via::QUEUE(), $event->via);
+        $this->assertEquals(SampleJobWithDisplayName::NICE_NAME, $event->scene);
     }
 }
