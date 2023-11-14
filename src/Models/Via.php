@@ -24,5 +24,4 @@ class Via extends Enum implements ViaContract
     public const WEB = 'web';
     public const CLI = 'cli';
     public const QUEUE = 'queue';
-
 }

@@ -36,7 +36,7 @@ class ModuleServiceProvider extends BaseModuleServiceProvider
     public function boot(): void
     {
         parent::boot();
-        App::bind(JobInfo::SERVICE_NAME, fn() => null);
+        App::bind(JobInfo::SERVICE_NAME, fn () => null);
 
         Queue::before(function (JobProcessing $event) {
             App::instance(
@@ -46,7 +46,7 @@ class ModuleServiceProvider extends BaseModuleServiceProvider
         });
 
         Queue::after(function (JobProcessed $event) {
-            App::bind(JobInfo::SERVICE_NAME, fn() => null);
+            App::bind(JobInfo::SERVICE_NAME, fn () => null);
         });
     }
 }
