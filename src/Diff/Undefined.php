@@ -16,13 +16,12 @@ namespace Konekt\History\Diff;
 
 final class Undefined
 {
-    public static function valueOrUndef(array $from, string $key): mixed
-    {
-        return array_key_exists($key, $from) ? $from[$key] : new self();
-    }
-
     public function __toString(): string
     {
         return 'N/A';
+    }
+    public static function valueOrUndef(array $from, string $key): mixed
+    {
+        return array_key_exists($key, $from) ? $from[$key] : new self();
     }
 }
