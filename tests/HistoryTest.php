@@ -19,6 +19,7 @@ use Konekt\History\Models\ModelHistoryEvent;
 use Konekt\History\Models\Via;
 use Konekt\History\Tests\Dummies\SampleJob;
 use Konekt\History\Tests\Dummies\SampleJobWithDisplayName;
+use Konekt\History\Tests\Dummies\SampleSceneResolver;
 use Konekt\History\Tests\Dummies\SampleTask;
 
 class HistoryTest extends TestCase
@@ -96,5 +97,17 @@ class HistoryTest extends TestCase
 
         $this->assertEquals(Via::QUEUE(), $event->via);
         $this->assertEquals(SampleJobWithDisplayName::NICE_NAME, $event->scene);
+    }
+
+    /** @test */
+    public function it_can_use_a_custom_scene_resolver()
+    {
+        History::useSceneResolver(SampleSceneResolver::class);
+        $task = SampleTask::create(['title' => 'Custom Scene', 'status' => 'in-progress']);
+
+        $event = History::begin($task);
+
+        $this->assertEquals(Via::QUEUE(), $event->via);
+        $this->assertEquals('Meh meh', $event->scene);
     }
 }

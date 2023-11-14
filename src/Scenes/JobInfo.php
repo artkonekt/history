@@ -12,7 +12,7 @@ declare(strict_types=1);
  *
  */
 
-namespace Konekt\History\Queue;
+namespace Konekt\History\Scenes;
 
 class JobInfo
 {

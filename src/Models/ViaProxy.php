@@ -16,6 +16,12 @@ namespace Konekt\History\Models;
 
 use Konekt\Concord\Proxies\EnumProxy;
 
+/**
+ * @method static Via WEB()
+ * @method static Via CLI()
+ * @method static Via QUEUE()
+ * @method static Via UNKNOWN()
+ */
 class ViaProxy extends EnumProxy
 {
 }

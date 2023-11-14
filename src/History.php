@@ -21,13 +21,19 @@ use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Request;
 use Konekt\History\Contracts\ModelHistoryEvent;
+use Konekt\History\Contracts\SceneResolver;
 use Konekt\History\Diff\Diff;
 use Konekt\History\Models\ModelHistoryEventProxy;
 use Konekt\History\Models\Via;
-use Konekt\History\Queue\JobInfo;
+use Konekt\History\Scenes\DefaultSceneResolver;
+use Konekt\History\Scenes\JobInfo;
 
 class History
 {
+    protected static ?SceneResolver $sceneResolver = null;
+
+    protected static string $sceneResolverClass = DefaultSceneResolver::class;
+
     public function __construct(
         protected ?Model $ofModel = null,
     ) {
@@ -63,6 +69,23 @@ class History
         ], static::commonFields($model)));
     }
 
+    public static function useSceneResolver(string|SceneResolver $resolver): void
+    {
+        if ($resolver instanceof SceneResolver) {
+            static::$sceneResolver = $resolver;
+            static::$sceneResolverClass = $resolver::class;
+
+            return;
+        }
+
+        if (!in_array(SceneResolver::class, class_implements($resolver) ?: [])) {
+            throw new \RuntimeException("The `$resolver` class does not implement the `ScreenResolver` interface");
+        }
+
+        static::$sceneResolverClass = $resolver;
+        static::$sceneResolver = null;
+    }
+
     public function get(bool $latestOnTop = true): Collection
     {
         /** @var Builder $query */
@@ -77,23 +100,7 @@ class History
 
     protected static function commonFields(Model $model): array
     {
-        if (App::runningInConsole()) {
-            /** @var null|JobInfo $jobInfo */
-            $jobInfo = App::get(JobInfo::SERVICE_NAME);
-            if (null === $jobInfo) {
-                $via = Via::CLI;
-                $scene = $_SERVER['argv'][1] ?? $_SERVER['argv'][0] ?? null;
-                if (is_string($scene) && str_starts_with($scene, '-')) {
-                    $scene = $_SERVER['argv'][0] ?? null;
-                }
-            } else {
-                $via = Via::QUEUE;
-                $scene = $jobInfo->job;
-            }
-        } else {
-            $via = Via::WEB;
-            $scene = Request::url();
-        }
+        [$via, $scene] = static::sceneResolver()->get();
 
         return [
             'via' => $via,
@@ -104,5 +111,14 @@ class History
             'ip_address' => Request::ip(),
             'user_agent' => Request::userAgent(),
         ];
+    }
+
+    protected static function sceneResolver(): SceneResolver
+    {
+        if (null === static::$sceneResolver) {
+            static::$sceneResolver = App::make(static::$sceneResolverClass);
+        }
+
+        return static::$sceneResolver;
     }
 }

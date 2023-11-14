@@ -21,7 +21,7 @@ use Illuminate\Support\Facades\Queue;
 use Konekt\Concord\BaseModuleServiceProvider;
 use Konekt\History\Models\ModelHistoryEvent;
 use Konekt\History\Models\Via;
-use Konekt\History\Queue\JobInfo;
+use Konekt\History\Scenes\JobInfo;
 
 class ModuleServiceProvider extends BaseModuleServiceProvider
 {
