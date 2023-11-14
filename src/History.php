@@ -24,9 +24,7 @@ use Konekt\History\Contracts\ModelHistoryEvent;
 use Konekt\History\Contracts\SceneResolver;
 use Konekt\History\Diff\Diff;
 use Konekt\History\Models\ModelHistoryEventProxy;
-use Konekt\History\Models\Via;
 use Konekt\History\Scenes\DefaultSceneResolver;
-use Konekt\History\Scenes\JobInfo;
 
 class History
 {
