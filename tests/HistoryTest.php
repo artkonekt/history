@@ -56,6 +56,25 @@ class HistoryTest extends TestCase
     }
 
     /** @test */
+    public function update_with_explicit_before_fields_can_be_recorded()
+    {
+        $task = SampleTask::create(['title' => 'Go There', 'status' => 'todo']);
+
+        $before = $task->getAttributes();
+        $task->update(['status' => 'done', 'description' => 'Been there']);
+
+        $event = History::logUpdate($task, $before);
+
+        $this->assertEquals(Operation::UPDATE, $event->operation->value());
+        $this->assertEquals(2, $event->diff()->changeCount());
+        $this->assertTrue($event->diff()->hasChanged('status'));
+        $this->assertTrue($event->diff()->hasChanged('description'));
+        $this->assertEquals('todo', $event->diff()->old('status'));
+        $this->assertEquals('done', $event->diff()->new('status'));
+        $this->assertEquals('Been there', $event->diff()->new('description'));
+    }
+
+    /** @test */
     public function non_diff_changes_can_be_manually_recorded()
     {
         $task = SampleTask::create(['title' => 'Hello', 'description' => 'Make me', 'status' => 'todo']);

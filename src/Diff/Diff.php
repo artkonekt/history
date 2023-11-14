@@ -31,7 +31,7 @@ class Diff implements Arrayable
         }
     }
 
-    public static function fromModel(Model $model, array $ignore = ['id', 'created_at', 'updated_at']): self
+    public static function fromModel(Model $model, ?array $before = null, array $ignore = ['id', 'created_at', 'updated_at']): self
     {
         $changes = [];
         $changedAttributes = $model->getChanges();
@@ -50,6 +50,9 @@ class Diff implements Arrayable
         foreach ($changedAttributes as $field => $newValue) {
             if (!in_array($field, $ignore)) {
                 $changes[$field] = ['n' => $newValue];
+                if (null !== $before && array_key_exists($field, $before)) {
+                    $changes[$field]['o'] = $before[$field];
+                }
             }
         }
 
