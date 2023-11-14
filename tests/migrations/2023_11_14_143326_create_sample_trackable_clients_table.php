@@ -13,7 +13,7 @@ return new class () extends Migration {
             $table->id();
             $table->string('name');
             $table->string('country');
-            $table->float('api_key');
+            $table->string('api_key');
             $table->softDeletes();
             $table->timestamps();
         });
