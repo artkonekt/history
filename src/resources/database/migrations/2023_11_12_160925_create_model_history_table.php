@@ -12,6 +12,7 @@ return new class () extends Migration {
         Schema::create('model_history', function (Blueprint $table) {
             $table->id();
             $table->intOrBigIntBasedOnRelated('user_id', Schema::connection(null), 'users.id')->nullable();
+            $table->string('operation', 32)->nullable();
             $table->string('via', 32)->nullable();
             $table->string('scene')->nullable();
             $table->ipAddress()->nullable();

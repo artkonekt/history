@@ -24,6 +24,7 @@ use Konekt\History\Contracts\ModelHistoryEvent;
 use Konekt\History\Contracts\SceneResolver;
 use Konekt\History\Diff\Diff;
 use Konekt\History\Models\ModelHistoryEventProxy;
+use Konekt\History\Models\Operation;
 use Konekt\History\Scenes\DefaultSceneResolver;
 
 class History
@@ -47,6 +48,7 @@ class History
         return ModelHistoryEventProxy::create(array_merge([
             'happened_at' => $model->created_at ?? now(),
             'diff' => Diff::fromModel($model)->toArray(),
+            'operation' => Operation::CREATE,
             'comment' => $comment,
         ], static::commonFields($model)));
     }
@@ -56,6 +58,7 @@ class History
         return ModelHistoryEventProxy::create(array_merge([
             'happened_at' => $model->updated_at ?? now(),
             'diff' => Diff::fromModel($model)->toArray(),
+            'operation' => Operation::UPDATE,
             'comment' => $comment,
         ], static::commonFields($model)));
     }
@@ -65,6 +68,7 @@ class History
         return ModelHistoryEventProxy::create(array_merge([
             'happened_at' => $model->updated_at ?? now(),
             'diff' => Diff::fromAttributeSets($before, $after)->toArray(),
+            'operation' => Operation::UPDATE,
             'comment' => $comment,
         ], static::commonFields($model)));
     }
@@ -74,6 +78,17 @@ class History
         return ModelHistoryEventProxy::create(array_merge([
             'happened_at' => now(),
             'comment' => $comment,
+            'operation' => Operation::COMMENT,
+            'diff' => [],
+        ], static::commonFields($model)));
+    }
+
+    public static function logDeletion(Model $model, ?string $comment = null): ModelHistoryEvent
+    {
+        return ModelHistoryEventProxy::create(array_merge([
+            'happened_at' => $model->deleted_at ?? now(),
+            'comment' => $comment,
+            'operation' => Operation::DELETE,
             'diff' => [],
         ], static::commonFields($model)));
     }

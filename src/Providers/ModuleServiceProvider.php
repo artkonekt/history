@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Queue;
 use Konekt\Concord\BaseModuleServiceProvider;
 use Konekt\History\Models\ModelHistoryEvent;
+use Konekt\History\Models\Operation;
 use Konekt\History\Models\Via;
 use Konekt\History\Scenes\JobInfo;
 
@@ -31,6 +32,7 @@ class ModuleServiceProvider extends BaseModuleServiceProvider
 
     protected $enums = [
         Via::class,
+        Operation::class,
     ];
 
     public function boot(): void

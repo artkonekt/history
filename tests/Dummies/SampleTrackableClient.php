@@ -15,11 +15,14 @@ declare(strict_types=1);
 namespace Konekt\History\Tests\Dummies;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Konekt\History\Contracts\ModelHistoryEvent;
 use Konekt\History\Contracts\Trackable;
 
 class SampleTrackableClient extends Model implements Trackable
 {
+    use SoftDeletes;
+
     protected $guarded = ['id'];
 
     public function generateHistoryEventSummary(ModelHistoryEvent $event): ?string

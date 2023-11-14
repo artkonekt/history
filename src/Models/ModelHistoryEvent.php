@@ -26,6 +26,7 @@ use Konekt\History\Diff\Diff;
 /**
  * @property int $id
  * @property int $user_id
+ * @property Operation $operation
  * @property Via $via
  * @property string|null $scene
  * @property string|null $ip_address
@@ -50,7 +51,8 @@ class ModelHistoryEvent extends Model implements ModelHistoryEventContract
     protected $guarded = ['id', 'created_at', 'updated_at'];
 
     protected $enums = [
-        'via' => 'ViaProxy@enumClass'
+        'operation' => 'OperationProxy@enumClass',
+        'via' => 'ViaProxy@enumClass',
     ];
 
     protected ?Diff $_diffCache = null;
@@ -80,11 +82,18 @@ class ModelHistoryEvent extends Model implements ModelHistoryEventContract
 
     public function summary(): string
     {
-        if ($this->model instanceof Trackable) {
-            return $this->model->generateHistoryEventSummary($this) ?? '';
+        if ($this->model instanceof Trackable && (null !== $summary = $this->model->generateHistoryEventSummary($this))) {
+            return $summary;
         }
 
-        return '';
+        return match ($this->operation->value()) {
+            Operation::UPDATE => __('Updated'),
+            Operation::CREATE => __('Created'),
+            Operation::COMMENT => __('Comment has been added'),
+            Operation::DELETE => __('Has been deleted'),
+            Operation::RETRIEVE => __('Was retrieved'),
+            default => '',
+        };
     }
 
     public function comment(): ?string

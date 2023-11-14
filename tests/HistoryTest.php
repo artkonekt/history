@@ -16,11 +16,13 @@ namespace Konekt\History\Tests;
 
 use Konekt\History\History;
 use Konekt\History\Models\ModelHistoryEvent;
+use Konekt\History\Models\Operation;
 use Konekt\History\Models\Via;
 use Konekt\History\Tests\Dummies\SampleJob;
 use Konekt\History\Tests\Dummies\SampleJobWithDisplayName;
 use Konekt\History\Tests\Dummies\SampleSceneResolver;
 use Konekt\History\Tests\Dummies\SampleTask;
+use Konekt\History\Tests\Dummies\SampleTrackableClient;
 
 class HistoryTest extends TestCase
 {
@@ -36,10 +38,11 @@ class HistoryTest extends TestCase
         $event = $history->first();
         $this->assertInstanceOf(ModelHistoryEvent::class, $event);
         $this->assertCount(3, $event->diff()->changes());
+        $this->assertEquals(Operation::CREATE, $event->operation->value());
     }
 
     /** @test */
-    public function an_update_can_be_recorded()
+    public function a_recent_update_can_be_recorded()
     {
         $task = SampleTask::create(['title' => 'Hello', 'description' => 'Make me', 'status' => 'todo']);
 
@@ -49,6 +52,7 @@ class HistoryTest extends TestCase
 
         $this->assertTrue($event->isASingleFieldChange());
         $this->assertTrue($event->diff()->hasChanged('status'));
+        $this->assertEquals(Operation::UPDATE, $event->operation->value());
     }
 
     /** @test */
@@ -62,6 +66,18 @@ class HistoryTest extends TestCase
         $this->assertTrue($event->isACommentOnlyEntry());
         $this->assertEmpty($event->diff()->changes());
         $this->assertEquals('Has timed out waiting', $event->comment());
+    }
+
+    /** @test */
+    public function deletion_can_be_recorded()
+    {
+        $client = SampleTrackableClient::create(['name' => 'X Ltd.', 'country' => 'Denmark', 'api_key' => 'xxx']);
+        History::begin($client);
+
+        $client->delete();
+
+        $deleteEvent = History::logDeletion($client);
+        $this->assertEquals(Operation::DELETE, $deleteEvent->operation->value());
     }
 
     /** @test */
