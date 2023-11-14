@@ -20,6 +20,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Carbon;
 use Konekt\Enum\Eloquent\CastsEnums;
 use Konekt\History\Contracts\ModelHistoryEvent as ModelHistoryEventContract;
+use Konekt\History\Contracts\Trackable;
 use Konekt\History\Diff\Diff;
 
 /**
@@ -79,7 +80,11 @@ class ModelHistoryEvent extends Model implements ModelHistoryEventContract
 
     public function summary(): string
     {
-        // TODO: Implement summary() method.
+        if ($this->model instanceof Trackable) {
+            return $this->model->generateHistoryEventSummary($this) ?? '';
+        }
+
+        return '';
     }
 
     public function comment(): ?string

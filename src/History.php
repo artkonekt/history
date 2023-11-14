@@ -42,19 +42,30 @@ class History
         return new static($model);
     }
 
-    public static function begin(Model $model): ModelHistoryEvent
+    public static function begin(Model $model, ?string $comment = null): ModelHistoryEvent
     {
         return ModelHistoryEventProxy::create(array_merge([
             'happened_at' => $model->created_at ?? now(),
             'diff' => Diff::fromModel($model)->toArray(),
+            'comment' => $comment,
         ], static::commonFields($model)));
     }
 
-    public static function addUpdate(Model $model): ModelHistoryEvent
+    public static function logRecentUpdate(Model $model, ?string $comment = null): ModelHistoryEvent
     {
         return ModelHistoryEventProxy::create(array_merge([
             'happened_at' => $model->updated_at ?? now(),
             'diff' => Diff::fromModel($model)->toArray(),
+            'comment' => $comment,
+        ], static::commonFields($model)));
+    }
+
+    public static function logUpdate(Model $model, array $before, array $after, ?string $comment = null): ModelHistoryEvent
+    {
+        return ModelHistoryEventProxy::create(array_merge([
+            'happened_at' => $model->updated_at ?? now(),
+            'diff' => Diff::fromAttributeSets($before, $after)->toArray(),
+            'comment' => $comment,
         ], static::commonFields($model)));
     }
 

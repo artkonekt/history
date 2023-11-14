@@ -17,6 +17,7 @@ namespace Konekt\History\Diff;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
+use Konekt\History\Contracts\Trackable;
 
 class Diff implements Arrayable
 {
@@ -37,6 +38,15 @@ class Diff implements Arrayable
         if (empty($changedAttributes) && $model->wasRecentlyCreated) {
             $changedAttributes = $model->getOriginal();
         }
+
+        if ($model instanceof Trackable) {
+            if (null !== $model->includeAttributesInHistory()) {
+                $changedAttributes = Arr::only($changedAttributes, $model->includeAttributesInHistory());
+            } elseif (null !== $model->excludeAttributesFromHistory()) {
+                $ignore = array_merge($ignore, $model->excludeAttributesFromHistory());
+            }
+        }
+
         foreach ($changedAttributes as $field => $newValue) {
             if (!in_array($field, $ignore)) {
                 $changes[$field] = ['n' => $newValue];
@@ -82,6 +92,16 @@ class Diff implements Arrayable
     public function changes(): array
     {
         return $this->changes;
+    }
+
+    public function changedFields(): array
+    {
+        return array_keys($this->changes);
+    }
+
+    public function singleChangedFieldName(): string|false
+    {
+        return 1 === $this->changeCount() ? $this->changedFields()[0] : false;
     }
 
     public function changeOf($field): ?Change

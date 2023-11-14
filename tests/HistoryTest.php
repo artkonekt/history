@@ -45,7 +45,7 @@ class HistoryTest extends TestCase
 
         History::begin($task);
         $task->update(['status' => 'done']);
-        $event = History::addUpdate($task);
+        $event = History::logRecentUpdate($task);
 
         $this->assertTrue($event->isASingleFieldChange());
         $this->assertTrue($event->diff()->hasChanged('status'));

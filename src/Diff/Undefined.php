@@ -20,4 +20,9 @@ final class Undefined
     {
         return array_key_exists($key, $from) ? $from[$key] : new self();
     }
+
+    public function __toString(): string
+    {
+        return 'N/A';
+    }
 }
