@@ -154,11 +154,26 @@ class HistoryTest extends TestCase
     {
         $user = $this->createUser();
         Auth::login($user);
-        $task = SampleTask::create(['title' => 'Custom Scene', 'status' => 'in-progress']);
+        $task = SampleTask::create(['title' => 'User Obtain', 'status' => 'in-progress']);
         $event = History::begin($task);
 
         $this->assertEquals($user->id, $event->user_id);
         $this->assertInstanceOf(Auth::getProvider()->getModel(), $event->user);
+    }
+
+    /** @test */
+    public function it_can_return_the_user()
+    {
+        $user = $this->createUser();
+        Auth::login($user);
+        $task = SampleTask::create(['title' => 'Eager Load User', 'status' => 'in-progress']);
+        History::begin($task);
+        History::addComment($task, 'Hello');
+        History::addComment($task, 'Yellow');
+
+        foreach (History::of($task)->get() as $event) {
+            $this->assertInstanceOf(Auth::getProvider()->getModel(), $event->user);
+        }
     }
 
     private function createUser(): Authenticatable
