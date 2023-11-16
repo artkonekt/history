@@ -1,9 +1,10 @@
 # Eloquent History Changelog
 
-## Unreleased
-##### 2023-XX-YY
+## 1.2.0
+##### 2023-11-16
 
 - Changed the behavior of logRecentUpdate: if there are no changes, then it won't write an empty event in the history
+- Changed the behavior of logUpdate: it saves "now" as happened_at instead of the model's updated_at field
 - Added the `isEmpty()` and `isNotEmpty()` methods to the `Diff` class
 
 ## 1.1.1
