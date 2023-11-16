@@ -1,5 +1,11 @@
 # Eloquent History Changelog
 
+## Unreleased
+##### 2023-XX-YY
+
+- Added the `ModelHistoryEvent::user(): BelongsTo` relationship
+- Added the `konekt.history.user_model` configuration to manually set the user class of the BelongsTo relationship 
+
 ## 1.0.1
 ##### 2023-11-16
 

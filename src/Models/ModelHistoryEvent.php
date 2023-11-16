@@ -16,8 +16,10 @@ namespace Konekt\History\Models;
 
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Konekt\Enum\Eloquent\CastsEnums;
 use Konekt\History\Contracts\ModelHistoryEvent as ModelHistoryEventContract;
 use Konekt\History\Contracts\Trackable;
@@ -67,6 +69,11 @@ class ModelHistoryEvent extends Model implements ModelHistoryEventContract
     public function model(): MorphTo
     {
         return $this->morphTo();
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(config('konekt.history.user_model', Auth::getProvider()->getModel()));
     }
 
     public function diff(): Diff

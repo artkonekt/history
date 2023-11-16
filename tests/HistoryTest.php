@@ -14,6 +14,10 @@ declare(strict_types=1);
 
 namespace Konekt\History\Tests;
 
+use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 use Konekt\History\History;
 use Konekt\History\Models\ModelHistoryEvent;
 use Konekt\History\Models\Operation;
@@ -144,5 +148,29 @@ class HistoryTest extends TestCase
 
         $this->assertEquals(Via::QUEUE(), $event->via);
         $this->assertEquals('Meh meh', $event->scene);
+    }
+
+    /** @test */
+    public function it_can_return_the_user_that_made_the_change()
+    {
+        $user = $this->createUser();
+        Auth::login($user);
+        $task = SampleTask::create(['title' => 'Custom Scene', 'status' => 'in-progress']);
+        $event = History::begin($task);
+
+        $this->assertEquals($user->id, $event->user_id);
+        $this->assertInstanceOf(Auth::getProvider()->getModel(), $event->user);
+    }
+
+    private function createUser(): Authenticatable
+    {
+        $userClass = Auth::getProvider()->getModel();
+        $user = new $userClass();
+        $user->name = 'Giovanni Gatto';
+        $user->email = 'giovanni@gatto.it';
+        $user->password = Hash::make('passw...1234..eer');
+        $user->save();
+
+        return $user;
     }
 }
