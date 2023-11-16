@@ -53,11 +53,16 @@ class History
         ], static::commonFields($model)));
     }
 
-    public static function logRecentUpdate(Model $model, ?string $comment = null): ModelHistoryEvent
+    public static function logRecentUpdate(Model $model, ?string $comment = null): ?ModelHistoryEvent
     {
+        $diff = Diff::fromModel($model);
+        if ($diff->isEmpty()) {
+            return null;
+        }
+
         return ModelHistoryEventProxy::create(array_merge([
             'happened_at' => $model->updated_at ?? now(),
-            'diff' => Diff::fromModel($model)->toArray(),
+            'diff' => $diff->toArray(),
             'operation' => Operation::UPDATE,
             'comment' => $comment,
         ], static::commonFields($model)));
@@ -66,7 +71,7 @@ class History
     public static function logUpdate(Model $model, array $before, ?string $comment = null): ModelHistoryEvent
     {
         return ModelHistoryEventProxy::create(array_merge([
-            'happened_at' => $model->updated_at ?? now(),
+            'happened_at' => now(),
             'diff' => Diff::fromModel($model, $before)->toArray(),
             'operation' => Operation::UPDATE,
             'comment' => $comment,

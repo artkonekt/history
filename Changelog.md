@@ -1,5 +1,11 @@
 # Eloquent History Changelog
 
+## Unreleased
+##### 2023-XX-YY
+
+- Changed the behavior of logRecentUpdate: if there are no changes, then it won't write an empty event in the history
+- Added the `isEmpty()` and `isNotEmpty()` methods to the `Diff` class
+
 ## 1.1.1
 ##### 2023-11-16
 

@@ -90,6 +90,16 @@ class Diff implements Arrayable
         return !$this->hasChanged($field);
     }
 
+    public function isEmpty(): bool
+    {
+        return empty($this->changes);
+    }
+
+    public function isNotEmpty(): bool
+    {
+        return !$this->isEmpty();
+    }
+
     /** @return Change[]
      */
     public function changes(): array

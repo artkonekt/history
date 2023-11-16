@@ -177,6 +177,16 @@ class HistoryTest extends TestCase
         }
     }
 
+    /** @test */
+    public function if_there_was_no_recent_update_then_nothing_gets_logged()
+    {
+        $id = Str::ulid()->toBase58();
+        SampleTask::create(['title' => $id, 'status' => 'todo']);
+
+        $task = SampleTask::where('title', $id)->first();
+        $this->assertNull(History::logRecentUpdate($task));
+    }
+
     private function createUser(): Authenticatable
     {
         $userClass = Auth::getProvider()->getModel();
