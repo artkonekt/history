@@ -1,7 +1,7 @@
 # Eloquent History Changelog
 
-## Unreleased
-##### 2023-XX-YY
+## 1.1.1
+##### 2023-11-16
 
 - Fixed N+1 query by eager loading the user relationship when retrieving history
 
