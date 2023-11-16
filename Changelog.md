@@ -1,9 +1,9 @@
 # Eloquent History Changelog
 
-## Unreleased
-##### 2023-XX-YY
+## 1.0.1
+##### 2023-11-16
 
-- Changed minimum Laravel version to v10.10.1 due to Arr::mapWithKeys being present from that version
+- Fixed possible `BadMethodCallException` by changing minimum Laravel version to v10.10.1 due to `Arr::mapWithKeys()` being present from that version
 
 ## 1.0.0
 ##### 2023-11-16
