@@ -17,6 +17,7 @@ namespace Konekt\History\Tests;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 use Konekt\History\History;
 use Konekt\History\Models\ModelHistoryEvent;
 use Konekt\History\Models\Operation;
@@ -181,7 +182,7 @@ class HistoryTest extends TestCase
         $userClass = Auth::getProvider()->getModel();
         $user = new $userClass();
         $user->name = 'Giovanni Gatto';
-        $user->email = 'giovanni@gatto.it';
+        $user->email = Str::ulid()->toBase58() . '@gatto.it';
         $user->password = Hash::make('passw...1234..eer');
         $user->save();
 
