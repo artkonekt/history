@@ -17,7 +17,6 @@ namespace Konekt\History\Tests;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
 use Konekt\History\History;
 use Konekt\History\Models\ModelHistoryEvent;
 use Konekt\History\Models\Operation;
