@@ -8,16 +8,25 @@
 
 This package provides features to log changes, diff and comments to Eloquent models.
 
-## Installation
+```php
+$task = Task::create(['title' => 'Get milk', 'status' => 'todo']);
+History::begin($task);
 
-> The minimum requirement of this package is PHP 8.1.
-
-To install this library in your application, use composer:
-
-```bash
-composer require konekt/history
+$task->update(['status' => 'done']);
+History::logRecentUpdate($task);
 ```
 
-## Usage
+## Features
 
+- Record model creation, update, delete, and retrieval
+- Add optional comments to events
+- Add comment-only history events
+- Automatically record the IP, URL, user agent and user ids when in an HTTP context
+- Automatically detect the CLI, the command name when in an artisan command
+- Automatically detect the queue and the job when running in a queued job
+- Define included/excluded fields on a per-model basis
+- Has a diff of the changed fields (old/new values)
 
+## Documentation
+
+For Installation and usage instruction see the Documentation; https://konekt.dev/history/master
