@@ -21,4 +21,14 @@ class Change
         public readonly mixed $new,
     ) {
     }
+
+    public function oldIsUndefined(): bool
+    {
+        return $this->old instanceof Undefined;
+    }
+
+    public function newIsUndefined(): bool
+    {
+        return $this->new instanceof Undefined;
+    }
 }

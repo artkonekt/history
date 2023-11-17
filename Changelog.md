@@ -1,5 +1,10 @@
 # Eloquent History Changelog
 
+## Unreleased
+##### 2023-XX-YY
+
+- Added the `oldIsUndefined()` & `newIsUndefined()` methods to the `Change` class
+
 ## 1.2.0
 ##### 2023-11-16
 

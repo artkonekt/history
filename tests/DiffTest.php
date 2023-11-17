@@ -155,4 +155,18 @@ class DiffTest extends PhpUnitTestCase
 
         $this->assertEquals($raw, $diff->toArray());
     }
+
+    /** @test */
+    public function the_change_can_tell_whether_its_old_or_new_value_is_undefined()
+    {
+        $diff = new Diff(['status' => ['n' => 'waiting']]);
+
+        $this->assertTrue($diff->changeOf('status')->oldIsUndefined());
+        $this->assertFalse($diff->changeOf('status')->newIsUndefined());
+
+        $diff = new Diff(['name' => ['o' => 'What?']]);
+
+        $this->assertTrue($diff->changeOf('name')->newIsUndefined());
+        $this->assertFalse($diff->changeOf('name')->oldIsUndefined());
+    }
 }
