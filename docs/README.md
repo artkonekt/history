@@ -1,8 +1,8 @@
 # Eloquent Model History Documentation
 
 History is a Laravel package to manage the history of changes of Eloquent models.
-This library DOES NOT automatically hook into the model's lifecycle events, but
-allows the developer to explicitly register history events at arbitrary places
+This library **DOES NOT automatically hook into the model's lifecycle events**, but
+allows the developer to manually register history events at arbitrary places
 in the application code.
 
 ## Features
