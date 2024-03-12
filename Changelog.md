@@ -1,9 +1,10 @@
 # Eloquent History Changelog
 
-## Unreleased
-##### 2024-XX-YY
+## 1.4.0
+##### 2024-03-12
 
 - Added Laravel 11 support
+- Changed the minimum PostgreSQL version to v12, due to an incompatibility detected with Laravel 11.0.0 and PostgreSQL 11
 
 ## 1.3.0
 ##### 2023-11-17
