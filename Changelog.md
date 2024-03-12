@@ -1,5 +1,10 @@
 # Eloquent History Changelog
 
+## Unreleased
+##### 2024-XX-YY
+
+- Added Laravel 11 support
+
 ## 1.3.0
 ##### 2023-11-17
 
