@@ -42,11 +42,11 @@ jobs:
         env:
           TEST_DB_ENGINE: mysql
           TEST_DB_PORT: ${{ job.services.mysql82.ports[3306] }}
-      - name: Run Tests [postgres 11]
+      - name: Run Tests [postgres 12]
         run: php vendor/bin/phpunit --stop-on-error --display-errors
         env:
           TEST_DB_ENGINE: pgsql
-          TEST_DB_PORT: ${{ job.services.postgres11.ports[5432] }}
+          TEST_DB_PORT: ${{ job.services.postgres12.ports[5432] }}
           TEST_DB_PASSWORD: postgres
       - name: Run Tests [postgres 16]
         run: php vendor/bin/phpunit --stop-on-error --display-errors
@@ -82,7 +82,7 @@ jobs:
           --health-timeout 5s
           --health-retries 5
       postgres11:
-        image: postgres:11
+        image: postgres:12
         env:
           POSTGRES_PASSWORD: postgres
           POSTGRES_DB: history_test
