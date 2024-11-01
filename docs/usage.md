@@ -4,6 +4,8 @@ You can use any existing eloquent model with this package without any modificati
 
 ## Record Events
 
+### Model Creation
+
 To record the created event use the `History::begin()` method:
 
 ```php
@@ -13,6 +15,8 @@ use Konekt\History\History;
 $project = Project::create(['name' => 'Giga Project', 'category' => 'Construction']);
 History::begin($project);
 ```
+
+### Model Updates
 
 Record updates can be stored as well:
 
@@ -46,11 +50,15 @@ $project->update(['category' => 'Investment']);
 History::logRecentUpdate($project, "Reclassified as per the CEO's request");
 ```
 
+### Comments Without Field Changes
+
 Comment only entries can be added:
 
 ```php
 History::addComment($project, 'Expiry in 10 days');
 ```
+
+### Deletion Events
 
 Model deletion can be logged as well:
 
@@ -58,6 +66,28 @@ Model deletion can be logged as well:
 $project->delete();
 History::logDeletion($project);
 ```
+
+### Record Action Execution
+
+It can happen that your model is doing "actions", like a report being executed,
+or a notification being triggered, and you want to add this event to the history.
+
+In such cases there are no field changes, and you just report the fact whether
+the action has succeeded or failed:
+
+```php
+try {
+    $report->execute();
+    History::logActionSuccess($report);
+} catch (\Throwable $e) {
+    History::logActionFailure($report, $e->getMessage());
+}
+```
+
+The generated action events have a `was_successful` boolean property which indicates whether the action ran
+successfully or failed.
+
+> For non-action events, the `was_successful` field is `null` indicating that there's no "success" information available
 
 ## Retrieve History Events
 
