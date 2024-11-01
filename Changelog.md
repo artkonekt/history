@@ -1,7 +1,7 @@
 # Eloquent History Changelog
 
-## Unreleased
-##### 2024-XX-YY
+## 1.5.0
+##### 2024-11-01
 
 - Added the `action` Operation type
 - Added the `details` field to the model history table/model
