@@ -24,6 +24,15 @@ use Konekt\History\Contracts\Operation as OperationContract;
  * @method static self DELETE()
  * @method static self RETRIEVE()
  * @method static self COMMENT()
+ * @method static self ACTION()
+ *
+ * @property-read bool $is_undefined
+ * @property-read bool $is_create
+ * @property-read bool $is_update
+ * @property-read bool $is_delete
+ * @property-read bool $is_retrieve
+ * @property-read bool $is_comment
+ * @property-read bool $is_action
  */
 class Operation extends Enum implements OperationContract
 {
@@ -34,4 +43,6 @@ class Operation extends Enum implements OperationContract
     public const DELETE = 'delete';
     public const RETRIEVE = 'retrieve';
     public const COMMENT = 'comment';
+
+    public const ACTION = 'action';
 }

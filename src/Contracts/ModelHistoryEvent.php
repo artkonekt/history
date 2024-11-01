@@ -24,6 +24,11 @@ interface ModelHistoryEvent
 
     public function comment(): ?string;
 
+    /**
+     * @todo V2 interface candidates
+     * public function details(): ?string;
+     */
+
     public function isASingleFieldChange(): bool;
 
     public function isNoFieldChangeEntry(): bool;

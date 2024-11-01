@@ -1,5 +1,12 @@
 # Eloquent History Changelog
 
+## Unreleased
+##### 2024-XX-YY
+
+- Added the `action` Operation type
+- Added the `details` field to the model history table/model
+- Added the `logActionSuccess()` and `logActionFailure()` factory methods to the `History` class
+
 ## 1.4.0
 ##### 2024-03-12
 

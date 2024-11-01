@@ -88,6 +88,16 @@ class History
         ], static::commonFields($model)));
     }
 
+    public static function logActionSuccess(Model $model, ?string $details = null): ModelHistoryEvent
+    {
+        return static::logAction($model, true, $details);
+    }
+
+    public static function logActionFailure(Model $model, ?string $details = null): ModelHistoryEvent
+    {
+        return static::logAction($model, false, $details);
+    }
+
     public static function logDeletion(Model $model, ?string $comment = null): ModelHistoryEvent
     {
         return ModelHistoryEventProxy::create(array_merge([
@@ -149,5 +159,17 @@ class History
         }
 
         return static::$sceneResolver;
+    }
+
+    protected static function logAction(Model $model, bool $wasSuccessful, ?string $details = null): ModelHistoryEvent
+    {
+        return ModelHistoryEventProxy::create(array_merge([
+            'happened_at' => now(),
+            'comment' => null,
+            'details' => $details,
+            'operation' => Operation::ACTION,
+            'was_successful' => $wasSuccessful,
+            'diff' => [],
+        ], static::commonFields($model)));
     }
 }

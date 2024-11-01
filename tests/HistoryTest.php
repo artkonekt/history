@@ -43,6 +43,7 @@ class HistoryTest extends TestCase
         $this->assertInstanceOf(ModelHistoryEvent::class, $event);
         $this->assertCount(3, $event->diff()->changes());
         $this->assertEquals(Operation::CREATE, $event->operation->value());
+        $this->assertNull($event->comment());
     }
 
     /** @test */
@@ -56,6 +57,7 @@ class HistoryTest extends TestCase
 
         $this->assertTrue($event->isASingleFieldChange());
         $this->assertTrue($event->diff()->hasChanged('status'));
+        $this->assertNull($event->comment());
         $this->assertEquals(Operation::UPDATE, $event->operation->value());
     }
 
@@ -89,6 +91,62 @@ class HistoryTest extends TestCase
         $this->assertTrue($event->isACommentOnlyEntry());
         $this->assertEmpty($event->diff()->changes());
         $this->assertEquals('Has timed out waiting', $event->comment());
+    }
+
+    /** @test */
+    public function it_can_record_a_successful_action()
+    {
+        $task = SampleTask::create(['title' => 'Hello', 'description' => 'Make me', 'status' => 'todo']);
+
+        $event = History::logActionSuccess($task);
+
+        $this->assertEquals(Operation::ACTION, $event->operation->value());
+        $this->assertTrue($event->was_successful);
+        $this->assertTrue($event->diff()->isEmpty());
+        $this->assertEmpty($event->diff()->changes());
+        $this->assertNull($event->comment());
+        $this->assertNull($event->details());
+    }
+
+    /** @test */
+    public function it_can_record_a_successful_action_with_details()
+    {
+        $task = SampleTask::create(['title' => 'Hello', 'description' => 'Make me', 'status' => 'todo']);
+
+        $event = History::logActionSuccess($task, '124 entries updated');
+
+        $this->assertEquals(Operation::ACTION, $event->operation->value());
+        $this->assertTrue($event->was_successful);
+        $this->assertEquals('124 entries updated', $event->details());
+        $this->assertNull($event->comment());
+    }
+
+    /** @test */
+    public function it_can_record_a_failed_action()
+    {
+        $task = SampleTask::create(['title' => 'Hello', 'description' => 'Make me', 'status' => 'todo']);
+
+        $event = History::logActionFailure($task);
+
+        $this->assertEquals(Operation::ACTION, $event->operation->value());
+        $this->assertFalse($event->was_successful);
+        $this->assertTrue($event->diff()->isEmpty());
+        $this->assertEmpty($event->diff()->changes());
+        $this->assertNull($event->comment());
+        $this->assertNull($event->details());
+    }
+
+    /** @test */
+    public function it_can_record_a_failed_action_with_details()
+    {
+        $task = SampleTask::create(['title' => 'Hello', 'description' => 'Make me', 'status' => 'todo']);
+
+        $event = History::logActionFailure($task, 'Error connecting to the Remote API');
+
+        $this->assertEquals(Operation::ACTION, $event->operation->value());
+        $this->assertFalse($event->was_successful);
+        $this->assertEquals('Error connecting to the Remote API', $event->details());
+        $this->assertNull($event->comment());
     }
 
     /** @test */
