@@ -39,11 +39,11 @@ jobs:
         env:
           TEST_DB_ENGINE: mysql
           TEST_DB_PORT: ${{ job.services.mysql57.ports[3306] }}
-      - name: Run Tests [mysql 8.2]
+      - name: Run Tests [mysql 8.4]
         run: php vendor/bin/phpunit --stop-on-error --display-errors
         env:
           TEST_DB_ENGINE: mysql
-          TEST_DB_PORT: ${{ job.services.mysql82.ports[3306] }}
+          TEST_DB_PORT: ${{ job.services.mysql84.ports[3306] }}
       - name: Run Tests [postgres 12]
         run: php vendor/bin/phpunit --stop-on-error --display-errors
         env:
@@ -64,7 +64,7 @@ jobs:
           MYSQL_DATABASE: history_test
         ports:
           - 3306
-      mysql82:
+      mysql84:
         image: mysql:8.4
         env:
           MYSQL_ALLOW_EMPTY_PASSWORD: yes
