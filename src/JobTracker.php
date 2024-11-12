@@ -18,12 +18,18 @@ use Illuminate\Contracts\Queue\Job;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Request;
 use Konekt\History\Contracts\JobExecution;
 use Konekt\History\Contracts\JobExecutionLog;
 use Konekt\History\Contracts\JobStatus;
 use Konekt\History\Contracts\SceneResolver;
 use Konekt\History\Contracts\TrackableJob;
+use Konekt\History\Events\TrackableJobCompleted;
+use Konekt\History\Events\TrackableJobCreated;
+use Konekt\History\Events\TrackableJobFailed;
+use Konekt\History\Events\TrackableJobLogCreated;
+use Konekt\History\Events\TrackableJobStarted;
 use Konekt\History\Models\JobExecutionProxy;
 use Konekt\History\Models\JobStatusProxy;
 use Konekt\History\Scenes\DefaultSceneResolver;
@@ -52,10 +58,14 @@ class JobTracker
      */
     public static function createFor(TrackableJob $job, int $maxProgress = 100): JobExecution
     {
-        return JobExecutionProxy::create(array_merge([
+        $result = JobExecutionProxy::create(array_merge([
             'queued_at' => Carbon::now(),
             'progress_max' => $maxProgress,
         ], static::commonFields($job)));
+
+        Event::dispatch(new TrackableJobCreated($job));
+
+        return $result;
     }
 
     /**
@@ -64,6 +74,8 @@ class JobTracker
     public function started(): void
     {
         $this->model()?->update(['started_at' => Carbon::now()]);
+
+        Event::dispatch(new TrackableJobStarted($this->job));
     }
 
     /**
@@ -78,6 +90,8 @@ class JobTracker
 
             $model->update(['completed_at' => Carbon::now()]);
         }
+
+        Event::dispatch(new TrackableJobCompleted($this->job));
     }
 
     /**
@@ -92,6 +106,8 @@ class JobTracker
 
             $model->update(['failed_at' => Carbon::now()]);
         }
+
+        Event::dispatch(new TrackableJobFailed($this->job));
     }
 
     public function setProgressMax(int $max): void
@@ -130,7 +146,7 @@ class JobTracker
             return null;
         }
 
-        return match ($level) {
+        $log = match ($level) {
             LogLevel::EMERGENCY => $model->logEmergency($message, $context),
             LogLevel::ALERT => $model->logAlert($message, $context),
             LogLevel::CRITICAL => $model->logCritical($message, $context),
@@ -141,6 +157,10 @@ class JobTracker
             LogLevel::DEBUG => $model->logDebug($message, $context),
             default => throw new \InvalidArgumentException("Unknown log level: $level"),
         };
+
+        Event::dispatch(new TrackableJobLogCreated($this->job, $log));
+
+        return $log;
     }
 
     protected static function commonFields(TrackableJob $job): array

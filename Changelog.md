@@ -4,6 +4,7 @@
 ##### 2024-XX-YY
 
 - Added Job Tracking and logging feature
+- Added job-tracking-related events
 
 ## 1.5.0
 ##### 2024-11-01

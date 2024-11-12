@@ -6,11 +6,18 @@ namespace Konekt\History\Tests;
 
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Bus;
+use Illuminate\Support\Facades\Event;
+use Konekt\History\Events\TrackableJobCompleted;
+use Konekt\History\Events\TrackableJobCreated;
+use Konekt\History\Events\TrackableJobFailed;
+use Konekt\History\Events\TrackableJobLogCreated;
+use Konekt\History\Events\TrackableJobStarted;
 use Konekt\History\JobTracker;
 use Konekt\History\Models\JobExecution;
 use Konekt\History\Models\JobStatus;
 use Konekt\History\Tests\Dummies\SampleTask;
 use Konekt\History\Tests\Dummies\SampleTrackableJob;
+use Psr\Log\LogLevel;
 
 class JobTrackerTest extends TestCase
 {
@@ -102,5 +109,97 @@ class JobTrackerTest extends TestCase
         $this->assertInstanceOf(Carbon::class, $execution->failed_at);
         $this->assertNull($execution->completed_at);
         $this->assertTrue(JobStatus::FAILED()->equals($execution->status()));
+    }
+
+    /** @test */
+    public function it_can_log_during_execution()
+    {
+        $task = SampleTask::create(['title' => 'Hello', 'description' => 'Make me', 'status' => 'todo']);
+        $job = new SampleTrackableJob($task, JobStatus::FAILED());
+        $job->generateJobTrackingId();
+        $job->plantLogForTesting(LogLevel::INFO, 'Hey hello, we are starting');
+        $job->plantLogForTesting(LogLevel::DEBUG, 'It is deep, man');
+        $job->plantLogForTesting(LogLevel::ERROR, 'Fell on its own ass');
+
+        $execution = JobTracker::createFor($job);
+        Bus::dispatchSync($job);
+
+        $execution = $execution->fresh();
+        $logs = $execution->getLogs();
+        $this->assertCount(3, $logs);
+    }
+
+    /** @test */
+    public function it_emits_a_created_event_when_creating_via_the_tracker()
+    {
+        $task = SampleTask::create(['title' => 'Hello', 'description' => 'Make me', 'status' => 'todo']);
+        $job = new SampleTrackableJob($task);
+        $job->generateJobTrackingId();
+
+        Event::fake();
+        JobTracker::createFor($job);
+
+        Event::assertDispatched(TrackableJobCreated::class);
+    }
+
+    /** @test */
+    public function it_emits_a_started_event_when_starting_via_the_tracker()
+    {
+        $task = SampleTask::create(['title' => 'Hello', 'description' => 'Make me', 'status' => 'todo']);
+        $job = new SampleTrackableJob($task);
+        $job->generateJobTrackingId();
+
+        Event::fake();
+        JobTracker::createFor($job);
+
+        Bus::dispatchSync($job);
+
+        Event::assertDispatched(TrackableJobStarted::class);
+    }
+
+    /** @test */
+    public function it_emits_a_failed_event_when_failing_via_the_tracker()
+    {
+        $task = SampleTask::create(['title' => 'Hello', 'description' => 'Make me', 'status' => 'todo']);
+        $job = new SampleTrackableJob($task, JobStatus::FAILED());
+        $job->generateJobTrackingId();
+
+        Event::fake();
+        JobTracker::createFor($job);
+
+        Bus::dispatchSync($job);
+
+        Event::assertDispatched(TrackableJobFailed::class);
+    }
+
+    /** @test */
+    public function it_emits_a_completed_event_when_completing_via_the_tracker()
+    {
+        $task = SampleTask::create(['title' => 'Hello', 'description' => 'Make me', 'status' => 'todo']);
+        $job = new SampleTrackableJob($task, JobStatus::COMPLETED());
+        $job->generateJobTrackingId();
+
+        Event::fake();
+        JobTracker::createFor($job);
+
+        Bus::dispatchSync($job);
+
+        Event::assertDispatched(TrackableJobCompleted::class);
+    }
+
+    /** @test */
+    public function it_emits_a_log_created_event_when_logging_via_the_tracker()
+    {
+        $task = SampleTask::create(['title' => 'Hello', 'description' => 'Make me', 'status' => 'todo']);
+        $job = new SampleTrackableJob($task);
+        $job->generateJobTrackingId();
+        $job->plantLogForTesting(LogLevel::INFO, 'Hey hello, we are starting');
+
+        Event::fake();
+
+        JobTracker::createFor($job);
+        Bus::dispatchSync($job);
+
+        Event::assertDispatched(TrackableJobLogCreated::class);
     }
 }

@@ -16,4 +16,5 @@ namespace Konekt\History\Contracts;
 
 interface JobExecutionLog
 {
+    public function getExecution(): JobExecution;
 }

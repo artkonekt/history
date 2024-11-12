@@ -15,16 +15,35 @@ class SampleTrackableJob implements TrackableJob
     use CanBeTracked;
     use Dispatchable;
 
+    private array $logs = [];
+
     public function __construct(
         protected SampleTask $task,
         protected ?JobStatus $finalStatus = null,
     ) {
     }
 
+    /**
+     * This method will prepare a list of logs that will be created during the handling of the job
+     */
+    public function plantLogForTesting(string $level, string $message, array $context = []): void
+    {
+        $this->logs[] = [
+            'level' => $level,
+            'message' => $message,
+            'context' => $context,
+        ];
+    }
+
     public function handle(): void
     {
         $tracker = JobTracker::of($this);
         $tracker->started();
+
+        foreach ($this->logs as $log) {
+            $tracker->log($log['message'], $log['level'], $log['context']);
+        }
+
         if (null !== $this->finalStatus) {
             if ($this->finalStatus->is_completed) {
                 $tracker->completed();
