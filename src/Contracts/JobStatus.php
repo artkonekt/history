@@ -18,4 +18,7 @@ use Konekt\Enum\EnumInterface;
 
 interface JobStatus extends EnumInterface
 {
+    public function isActive(): bool;
+
+    public function hasEnded(): bool;
 }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Konekt\History\Models;
 
+use DateTimeInterface;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
@@ -42,5 +43,25 @@ class JobExecutionLog extends Model implements JobExecutionLogContract
     public function getExecution(): JobExecution
     {
         return $this->jobExecution;
+    }
+
+    public function getMessage(): string
+    {
+        return $this->message;
+    }
+
+    public function getHappenedAt(): DateTimeInterface
+    {
+        return $this->happened_at;
+    }
+
+    public function getLevel(): string
+    {
+        return $this->level;
+    }
+
+    public function getContext(): array
+    {
+        return $this->context;
     }
 }

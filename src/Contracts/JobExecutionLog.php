@@ -14,7 +14,17 @@ declare(strict_types=1);
 
 namespace Konekt\History\Contracts;
 
+use DateTimeInterface;
+
 interface JobExecutionLog
 {
     public function getExecution(): JobExecution;
+
+    public function getMessage(): string;
+
+    public function getHappenedAt(): DateTimeInterface;
+
+    public function getLevel(): string;
+
+    public function getContext(): array;
 }
