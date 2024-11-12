@@ -3,12 +3,12 @@
 declare(strict_types=1);
 
 /**
- * Contains the Operation interface.
+ * Contains the JobStatus interface.
  *
- * @copyright   Copyright (c) 2023 Attila Fulop
+ * @copyright   Copyright (c) 2024 Attila Fulop
  * @author      Attila Fulop
  * @license     MIT
- * @since       2023-11-14
+ * @since       2024-11-12
  *
  */
 
@@ -16,6 +16,6 @@ namespace Konekt\History\Contracts;
 
 use Konekt\Enum\EnumInterface;
 
-interface Operation extends EnumInterface
+interface JobStatus extends EnumInterface
 {
 }

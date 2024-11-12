@@ -1,5 +1,10 @@
 # Eloquent History Changelog
 
+## Unreleased
+##### 2024-XX-YY
+
+- Added Job Tracking and logging feature
+
 ## 1.5.0
 ##### 2024-11-01
 

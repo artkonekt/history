@@ -14,6 +14,8 @@ declare(strict_types=1);
 
 namespace Konekt\History\Contracts;
 
-interface Via
+use Konekt\Enum\EnumInterface;
+
+interface Via extends EnumInterface
 {
 }

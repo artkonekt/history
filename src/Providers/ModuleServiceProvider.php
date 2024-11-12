@@ -19,6 +19,9 @@ use Illuminate\Queue\Events\JobProcessing;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Queue;
 use Konekt\Concord\BaseModuleServiceProvider;
+use Konekt\History\Models\JobExecution;
+use Konekt\History\Models\JobExecutionLog;
+use Konekt\History\Models\JobStatus;
 use Konekt\History\Models\ModelHistoryEvent;
 use Konekt\History\Models\Operation;
 use Konekt\History\Models\Via;
@@ -28,11 +31,14 @@ class ModuleServiceProvider extends BaseModuleServiceProvider
 {
     protected $models = [
         ModelHistoryEvent::class,
+        JobExecution::class,
+        JobExecutionLog::class,
     ];
 
     protected $enums = [
         Via::class,
         Operation::class,
+        JobStatus::class,
     ];
 
     public function boot(): void
