@@ -56,6 +56,12 @@ jobs:
           TEST_DB_ENGINE: pgsql
           TEST_DB_PORT: ${{ job.services.postgres16.ports[5432] }}
           TEST_DB_PASSWORD: postgres
+      - name: Run Tests [postgres 17]
+        run: php vendor/bin/phpunit --stop-on-error --display-errors
+        env:
+          TEST_DB_ENGINE: pgsql
+          TEST_DB_PORT: ${{ job.services.postgres17.ports[5432] }}
+          TEST_DB_PASSWORD: postgres
     services:
       mysql57:
         image: mysql:5.7
@@ -71,6 +77,18 @@ jobs:
           MYSQL_DATABASE: history_test
         ports:
           - 3306
+      postgres17:
+        image: postgres:17
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: history_test
+        ports:
+          - 5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
       postgres16:
         image: postgres:16
         env:

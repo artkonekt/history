@@ -6,7 +6,12 @@
 [![StyleCI](https://styleci.io/repos/717756663/shield?branch=master)](https://styleci.io/repos/717756663)
 [![MIT Software License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](LICENSE.md)
 
-This package provides features to log changes, diff and comments to Eloquent models.
+This package provides features to:
+
+1. Log changes, diff and comments to Eloquent models;
+2. Track and log the execution history of Laravel background jobs;
+
+### Model History
 
 ```php
 $task = Task::create(['title' => 'Get milk', 'status' => 'todo']);
@@ -14,6 +19,45 @@ History::begin($task);
 
 $task->update(['status' => 'done']);
 History::logRecentUpdate($task);
+```
+
+### Job History
+
+The goal of tracking a job is to be able to show the status and updates of a background job on frontends.
+It is similar to logging, but is always scoped to a given job execution, and it has a state
+
+```php
+class MyJob implements \Konekt\History\Contracts\TrackableJob
+{
+    use \Konekt\History\Concerns\CanBeTracked;
+    
+    public function __construct(private array $dataToProcess)
+    {        
+    }
+    
+    public function handle()
+    {
+        $tracker = JobTracker::of($this);
+        $tracker->setProgressMax(count($this->dataToProcess));
+        $tracker->started();
+        try {
+            foreach ($this->dataToProcess as $data) {
+                do_something_with($data);
+                $tracker->advance();
+                $tracker->logInfo('An entry was processed');
+            }
+            $tracker->completed();
+        } catch (\Throwable $e) {
+            $tracker->failed($e->getMessage());
+        }
+    }
+}
+
+$job = new MyJob();
+$job->generateJobTrackingId();
+
+JobTracker::createFor($job);
+Bus::dispatch($job);
 ```
 
 ## Features
@@ -31,11 +75,15 @@ History::logRecentUpdate($task);
 
 It requires PHP 8.1+ and Laravel 10 or 11.
 
-It has been tested with SQLite, MySQL 5.7, 8.0, 8.2 & 8.4 and PostgreSQL 11, 12 & 16.
+It has been tested with:
+- PHP 8.1, 8.2, 8.3 & 8.4
+- SQLite,
+- MySQL 5.7, 8.0, 8.2 & 8.4,
+- PostgreSQL 12, 16 & 17.
 
 It is known that this library, **Laravel 11.0 and PostgreSQL 11 don't work together**, therefore it is
 recommended to use at least Postgres version 12 or higher in case your DB engine is Postgres.
 
 ## Documentation
 
-For Installation and usage instruction see the Documentation; https://konekt.dev/history/master
+For Installation and usage instruction see the Documentation; https://konekt.dev/history/1.x
