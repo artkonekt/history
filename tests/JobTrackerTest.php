@@ -6,7 +6,6 @@ namespace Konekt\History\Tests;
 
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Bus;
-use Illuminate\Support\Facades\Queue;
 use Konekt\History\JobTracker;
 use Konekt\History\Models\JobExecution;
 use Konekt\History\Models\JobStatus;

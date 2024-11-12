@@ -39,8 +39,7 @@ class JobTracker
 
     public function __construct(
         protected TrackableJob $job,
-    )
-    {
+    ) {
     }
 
     public static function of(TrackableJob $job): static
