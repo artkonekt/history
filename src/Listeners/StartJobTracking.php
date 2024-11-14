@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Konekt\History\Listeners;
 
-use Illuminate\Queue\Events\JobQueueing;
+use Illuminate\Queue\Events\JobQueued;
 use Konekt\History\Contracts\TrackableJob;
 use Konekt\History\JobTracker;
 
 class StartJobTracking
 {
-    public function handle(JobQueueing $event)
+    public function handle(JobQueued $event)
     {
         if (!$event->job instanceof TrackableJob) {
             return;
