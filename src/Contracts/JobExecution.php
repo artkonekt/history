@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace Konekt\History\Contracts;
 
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Collection;
 
 interface JobExecution
@@ -50,4 +51,6 @@ interface JobExecution
 
     /** @return Collection|JobExecutionLog[] */
     public function getLogs(): Collection;
+
+    public function getUser(): ?Authenticatable;
 }

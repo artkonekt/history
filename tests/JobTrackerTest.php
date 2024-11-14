@@ -4,9 +4,13 @@ declare(strict_types=1);
 
 namespace Konekt\History\Tests;
 
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 use Konekt\History\Events\TrackableJobCompleted;
 use Konekt\History\Events\TrackableJobCreated;
 use Konekt\History\Events\TrackableJobFailed;
@@ -36,7 +40,7 @@ class JobTrackerTest extends TestCase
         $this->assertTrue($execution->queued_at->eq($queueDate));
         $this->assertNull($execution->started_at);
         $this->assertNull($execution->completed_at);
-        $this->assertNull($execution->failed_et);
+        $this->assertNull($execution->failed_at);
         $this->assertTrue(JobStatus::QUEUED()->equals($execution->status()));
     }
 
@@ -201,5 +205,50 @@ class JobTrackerTest extends TestCase
         Bus::dispatchSync($job);
 
         Event::assertDispatched(TrackableJobLogCreated::class);
+    }
+
+    /** @test */
+    public function it_records_the_authenticated_user()
+    {
+        $task = SampleTask::create(['title' => 'Hello', 'description' => 'Make me', 'status' => 'todo']);
+
+        $user = $this->createUser();
+        Auth::login($user);
+
+        $job = new SampleTrackableJob($task);
+        $job->generateJobTrackingId();
+
+        $execution = JobTracker::createFor($job);
+
+        $this->assertEquals($user->getAuthIdentifier(), $execution->user_id);
+        $this->assertInstanceOf(Auth::getProvider()->getModel(), $execution->user);
+        $this->assertInstanceOf(Auth::getProvider()->getModel(), $execution->getUser());
+    }
+
+    /** @test */
+    public function the_user_is_null_when_created_as_unauthenticated()
+    {
+        $task = SampleTask::create(['title' => 'Hello', 'description' => 'Make me', 'status' => 'todo']);
+
+        $job = new SampleTrackableJob($task);
+        $job->generateJobTrackingId();
+
+        $execution = JobTracker::createFor($job);
+
+        $this->assertNull($execution->user_id);
+        $this->assertNull($execution->user);
+        $this->assertNull($execution->getUser());
+    }
+
+    private function createUser(): Authenticatable
+    {
+        $userClass = Auth::getProvider()->getModel();
+        $user = new $userClass();
+        $user->name = 'Fritz Teufel';
+        $user->email = Str::ulid()->toBase58() . '@teufel.de';
+        $user->password = Hash::make('qwerty123...what else?');
+        $user->save();
+
+        return $user;
     }
 }

@@ -14,11 +14,13 @@ namespace Konekt\History\Models;
  *
  */
 
-use Illuminate\Auth\Authenticatable;
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Auth;
 use Konekt\History\Contracts\JobExecution as JobExecutionContract;
 use Konekt\History\Contracts\JobExecutionLog as JobExecutionLogContract;
 use Konekt\History\Contracts\JobStatus as JobStatusContract;
@@ -68,6 +70,11 @@ class JobExecution extends Model implements JobExecutionContract
     public static function findByTrackingId(string $id): ?self
     {
         return static::where('tracking_id', $id)->first();
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(config('konekt.history.user_model', Auth::getProvider()->getModel()));
     }
 
     public function status(): JobStatusContract
@@ -160,6 +167,11 @@ class JobExecution extends Model implements JobExecutionContract
     public function logs(): HasMany
     {
         return $this->hasMany(JobExecutionLogProxy::modelClass(), 'job_execution_id', 'id');
+    }
+
+    public function getUser(): ?Authenticatable
+    {
+        return $this->user;
     }
 
     protected function log(string $message, string $level, array $context): JobExecutionLogContract
