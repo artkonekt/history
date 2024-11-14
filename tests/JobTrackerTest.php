@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Konekt\History\Tests;
 
 use Illuminate\Contracts\Auth\Authenticatable;
-use Illuminate\Queue\Events\JobQueueing;
+use Illuminate\Queue\Events\JobQueued;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Bus;
@@ -142,7 +142,7 @@ class JobTrackerTest extends TestCase
         // and that the tracking id was initialized correctly
         // but during tests queue listeners aren't invoked
         Event::fake();
-        Event::assertListening(JobQueueing::class, StartJobTracking::class);
+        Event::assertListening(JobQueued::class, StartJobTracking::class);
     }
 
     /** @test */

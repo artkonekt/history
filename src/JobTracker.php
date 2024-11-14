@@ -181,6 +181,11 @@ class JobTracker
         return $this->model()?->getLogs() ?? collect();
     }
 
+    public function hasExecutionEntry(): bool
+    {
+        return null !== $this->model();
+    }
+
     protected static function commonFields(TrackableJob $job): array
     {
         [$via, $scene] = static::sceneResolver()->get();

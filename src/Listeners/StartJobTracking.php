@@ -12,9 +12,17 @@ class StartJobTracking
 {
     public function handle(JobQueueing $event)
     {
-        if ($event->job instanceof TrackableJob && $event->job->doesNotHaveTrackingIdYet()) {
-            $event->job->generateJobTrackingId();
-            JobTracker::createFor($event->job);
+        if (!$event->job instanceof TrackableJob) {
+            return;
+        }
+
+        if ($event->job->doesNotHaveTrackingIdYet()) {
+            $event->job->generateJobTrackingId(); // In fact, it's not the best idea, because it won't be saved to the payload
+        }
+
+        if (!JobTracker::of($event->job)->hasExecutionEntry()) {
+            $tracker = JobTracker::createFor($event->job);
+            $tracker->logInfo(__('The job has been queued'));
         }
     }
 }
