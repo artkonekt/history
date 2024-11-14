@@ -133,7 +133,7 @@ class JobExecution extends Model implements JobExecutionContract
 
     public function getProgressAsPercent(int $precision = 1): float
     {
-        return round($this->current_progress / $this->progress_max * 100, $precision);
+        return $this->progress_max <= 0 ? 0.00 : round($this->current_progress / $this->progress_max * 100, $precision);
     }
 
     public function logEmergency(string $message, array $context = []): JobExecutionLogContract
