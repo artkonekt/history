@@ -16,9 +16,12 @@ namespace Konekt\History\Providers;
 
 use Illuminate\Queue\Events\JobProcessed;
 use Illuminate\Queue\Events\JobProcessing;
+use Illuminate\Queue\Events\JobQueueing;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Queue;
 use Konekt\Concord\BaseModuleServiceProvider;
+use Konekt\History\Listeners\StartJobTracking;
 use Konekt\History\Models\JobExecution;
 use Konekt\History\Models\JobExecutionLog;
 use Konekt\History\Models\JobStatus;
@@ -45,6 +48,8 @@ class ModuleServiceProvider extends BaseModuleServiceProvider
     {
         parent::boot();
         App::bind(JobInfo::SERVICE_NAME, fn () => null);
+
+        Event::listen(JobQueueing::class, StartJobTracking::class);
 
         Queue::before(function (JobProcessing $event) {
             App::instance(

@@ -15,12 +15,15 @@ declare(strict_types=1);
 namespace Konekt\History\Concerns;
 
 use Illuminate\Support\Str;
+use Konekt\History\JobTracker;
 
 trait CanBeTracked
 {
-    public string $job_tracking_id;
+    private ?JobTracker $jobTracker = null;
 
-    public function getJobTrackingId(): string
+    public ?string $job_tracking_id = null;
+
+    public function getJobTrackingId(): ?string
     {
         return $this->job_tracking_id;
     }
@@ -39,5 +42,20 @@ trait CanBeTracked
     public function generateJobTrackingId(): static
     {
         return $this->setJobTrackingId(Str::ulid()->toBase58());
+    }
+
+    public function hasTrackingId(): bool
+    {
+        return null !== $this->job_tracking_id;
+    }
+
+    public function doesNotHaveTrackingIdYet(): bool
+    {
+        return null === $this->job_tracking_id;
+    }
+
+    protected function jobTracker(): JobTracker
+    {
+        return $this->jobTracker ??= JobTracker::of($this);
     }
 }

@@ -16,5 +16,13 @@ namespace Konekt\History\Contracts;
 
 interface TrackableJob
 {
-    public function getJobTrackingId(): string;
+    public function getJobTrackingId(): ?string;
+
+    public function setJobTrackingId(string $trackingId): static;
+
+    public function generateJobTrackingId(): static;
+
+    public function hasTrackingId(): bool;
+
+    public function doesNotHaveTrackingIdYet(): bool;
 }

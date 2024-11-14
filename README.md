@@ -37,7 +37,7 @@ class MyJob implements \Konekt\History\Contracts\TrackableJob
     
     public function handle()
     {
-        $tracker = JobTracker::of($this);
+        $tracker = $this->jobTracker();
         $tracker->setProgressMax(count($this->dataToProcess));
         $tracker->started();
         try {
@@ -53,11 +53,7 @@ class MyJob implements \Konekt\History\Contracts\TrackableJob
     }
 }
 
-$job = new MyJob();
-$job->generateJobTrackingId();
-
-JobTracker::createFor($job);
-Bus::dispatch($job);
+MyJob::dispatch($myDataToProcess);
 ```
 
 ## Features

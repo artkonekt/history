@@ -1,10 +1,15 @@
-# Eloquent Model History Documentation
+# Eloquent Model History + Laravel Job History Documentation
 
-History is a Laravel package to manage the history of changes of Eloquent models.
+History is a Laravel package to manage the history of:
+
+1. Changes, diff and comments of Eloquent models;
+2. Track and log the execution history of Laravel background jobs;
 
 !> This library **DOES NOT automatically hook into the model's lifecycle events**, but allows the developer to manually register history events at arbitrary places in the application code.
 
 ## Features
+
+### Eloquent Model History
 
 - Record model creation, update, delete, and retrieval
 - Add optional comments to events
@@ -14,6 +19,8 @@ History is a Laravel package to manage the history of changes of Eloquent models
 - Automatically detect the queue and the job when running in a queued job
 - Define included/excluded fields on a per-model basis
 - Has a diff of the changed fields (old/new values)
+
+### Eloquent Model History
 
 ## Alternatives
 

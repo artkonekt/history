@@ -37,7 +37,7 @@ class SampleTrackableJob implements TrackableJob
 
     public function handle(): void
     {
-        $tracker = JobTracker::of($this);
+        $tracker = $this->jobTracker();
         $tracker->started();
 
         foreach ($this->logs as $log) {

@@ -28,6 +28,7 @@ return new class () extends Migration {
             $table->timestamps();
 
             $table->index('queued_at');
+            $table->index('job_class');
 
             $table->foreign('user_id')
                 ->references('id')

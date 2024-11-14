@@ -60,6 +60,13 @@ class JobTracker
      */
     public static function createFor(TrackableJob $job, int $maxProgress = 100): JobExecution
     {
+        if ($job->doesNotHaveTrackingIdYet()) {
+            // We could generate a tracking ID here, but that would mean
+            // that the tracking ID may or may not be persisted along
+            // with the job to the queue and lead to inconsistency
+            throw new \LogicException('The job to be tracked does not have a tracking ID yet.');
+        }
+
         $result = JobExecutionProxy::create(array_merge([
             'queued_at' => Carbon::now(),
             'progress_max' => $maxProgress,

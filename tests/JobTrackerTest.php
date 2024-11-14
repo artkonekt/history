@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Konekt\History\Tests;
 
 use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Queue\Events\JobQueueing;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Bus;
@@ -17,6 +18,7 @@ use Konekt\History\Events\TrackableJobFailed;
 use Konekt\History\Events\TrackableJobLogCreated;
 use Konekt\History\Events\TrackableJobStarted;
 use Konekt\History\JobTracker;
+use Konekt\History\Listeners\StartJobTracking;
 use Konekt\History\Models\JobExecution;
 use Konekt\History\Models\JobStatus;
 use Konekt\History\Tests\Dummies\SampleTask;
@@ -131,6 +133,16 @@ class JobTrackerTest extends TestCase
         $execution = $execution->fresh();
         $logs = $execution->getLogs();
         $this->assertCount(3, $logs);
+    }
+
+    /** @test */
+    public function the_start_job_tracking_listener_is_active()
+    {
+        // I wanted to test here whether the listener works well
+        // and that the tracking id was initialized correctly
+        // but during tests queue listeners aren't invoked
+        Event::fake();
+        Event::assertListening(JobQueueing::class, StartJobTracking::class);
     }
 
     /** @test */

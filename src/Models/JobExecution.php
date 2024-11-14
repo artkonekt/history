@@ -15,6 +15,7 @@ namespace Konekt\History\Models;
  */
 
 use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -51,6 +52,8 @@ use Psr\Log\LogLevel;
  *
  * @property-read Model|Authenticatable $user
  * @property-read Collection $logs
+ *
+ * @method static Builder ofJobClass(string $jobClass)
  */
 class JobExecution extends Model implements JobExecutionContract
 {
@@ -70,6 +73,20 @@ class JobExecution extends Model implements JobExecutionContract
     public static function findByTrackingId(string $id): ?self
     {
         return static::where('tracking_id', $id)->first();
+    }
+
+    public static function byJobClass(string $jobClass, bool $activeOnesOnly = false, ?int $limit = null): Collection
+    {
+        $query = static::ofJobClass($jobClass)->orderBy('queued_at', 'desc');
+        if ($activeOnesOnly) {
+            $query->whereNull('failed_at')->whereNull('completed_at');
+        }
+
+        if (null !== $limit) {
+            $query->take($limit);
+        }
+
+        return $query->get();
     }
 
     public function user(): BelongsTo
@@ -172,6 +189,11 @@ class JobExecution extends Model implements JobExecutionContract
     public function getUser(): ?Authenticatable
     {
         return $this->user;
+    }
+
+    protected function scopeOfJobClass(Builder $query, string $jobClass): Builder
+    {
+        return $query->where('job_class', $jobClass);
     }
 
     protected function log(string $message, string $level, array $context): JobExecutionLogContract
