@@ -16,6 +16,7 @@ namespace Konekt\History;
 
 use Illuminate\Contracts\Queue\Job;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Event;
@@ -25,6 +26,7 @@ use Konekt\History\Contracts\JobExecutionLog;
 use Konekt\History\Contracts\JobStatus;
 use Konekt\History\Contracts\SceneResolver;
 use Konekt\History\Contracts\TrackableJob;
+use Konekt\History\Events\TrackableJobAdvanced;
 use Konekt\History\Events\TrackableJobCompleted;
 use Konekt\History\Events\TrackableJobCreated;
 use Konekt\History\Events\TrackableJobFailed;
@@ -122,7 +124,11 @@ class JobTracker
 
     public function advance(int $steps = 1): void
     {
-        $this->model()?->advance($steps);
+        if (null !== $model = $this->model()) {
+            $model->advance($steps);
+
+            Event::dispatch(new TrackableJobAdvanced($this->job));
+        }
     }
 
     public function getProgress(): int
@@ -161,6 +167,11 @@ class JobTracker
         Event::dispatch(new TrackableJobLogCreated($this->job, $log));
 
         return $log;
+    }
+
+    public function logs(): Collection
+    {
+        return $this->model()?->getLogs() ?? collect();
     }
 
     protected static function commonFields(TrackableJob $job): array
