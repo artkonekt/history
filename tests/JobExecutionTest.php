@@ -16,6 +16,8 @@ class JobExecutionTest extends TestCase
     /** @test */
     public function it_can_find_and_entry_by_tracking_id()
     {
+        JobExecution::ofJobClass(SampleTrackableJob::class)->delete();
+
         $job = new SampleTrackableJob(new SampleTask());
         $job->generateJobTrackingId();
         JobTracker::createFor($job);
@@ -29,6 +31,8 @@ class JobExecutionTest extends TestCase
     /** @test */
     public function it_can_return_the_entries_of_a_given_job_class()
     {
+        JobExecution::ofJobClass(SampleTrackableJob::class)->delete();
+
         foreach (range(1, 10) as $i) {
             $job = new SampleTrackableJob(new SampleTask());
             $job->generateJobTrackingId();
@@ -42,6 +46,8 @@ class JobExecutionTest extends TestCase
     /** @test */
     public function it_can_return_the_active_entries_of_a_given_job_class()
     {
+        JobExecution::ofJobClass(SampleTrackableJob::class)->delete();
+
         foreach (range(1, 4) as $i) {
             $job = new SampleTrackableJob(new SampleTask(), JobStatus::COMPLETED());
             $job->generateJobTrackingId();
@@ -65,6 +71,8 @@ class JobExecutionTest extends TestCase
     /** @test */
     public function it_can_return_the_entries_of_a_given_job_class_and_limit_the_record_count()
     {
+        JobExecution::ofJobClass(SampleTrackableJob::class)->delete();
+
         foreach (range(1, 10) as $i) {
             $job = new SampleTrackableJob(new SampleTask());
             $job->generateJobTrackingId();
