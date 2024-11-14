@@ -44,11 +44,11 @@ class JobStatus extends Enum implements JobStatusContract
 
     public function isActive(): bool
     {
-        return $this->isAnyOf(self::QUEUED(), self::PROCESSING());
+        return in_array($this->value(), [static::QUEUED, static::PROCESSING]);
     }
 
     public function hasEnded(): bool
     {
-        return $this->isAnyOf(self::COMPLETED(), self::FAILED());
+        return in_array($this->value(), [static::COMPLETED, static::FAILED]);
     }
 }
