@@ -7,7 +7,6 @@ namespace Konekt\History\Tests\Dummies;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Konekt\History\Concerns\CanBeTracked;
 use Konekt\History\Contracts\TrackableJob;
-use Konekt\History\JobTracker;
 use Konekt\History\Models\JobStatus;
 
 class SampleTrackableJob implements TrackableJob

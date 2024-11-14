@@ -19,9 +19,9 @@ use Konekt\History\JobTracker;
 
 trait CanBeTracked
 {
-    private ?JobTracker $jobTracker = null;
-
     public ?string $job_tracking_id = null;
+
+    private ?JobTracker $jobTracker = null;
 
     public function getJobTrackingId(): ?string
     {
