@@ -54,6 +54,8 @@ use Psr\Log\LogLevel;
  * @property-read Collection $logs
  *
  * @method static Builder ofJobClass(string $jobClass)
+ * @method static Builder actives()
+ * @method static Builder ended()
  */
 class JobExecution extends Model implements JobExecutionContract
 {
@@ -194,6 +196,16 @@ class JobExecution extends Model implements JobExecutionContract
     protected function scopeOfJobClass(Builder $query, string $jobClass): Builder
     {
         return $query->where('job_class', $jobClass);
+    }
+
+    protected function actives(Builder $query): Builder
+    {
+        return $query->whereNull('completed_at')->whereNull('failed_at');
+    }
+
+    protected function ended(Builder $query): Builder
+    {
+        return $query->whereNotNull('completed_at')->whereNotNull('failed_at');
     }
 
     protected function log(string $message, string $level, array $context): JobExecutionLogContract
