@@ -11,7 +11,7 @@ return new class () extends Migration {
     {
         Schema::create('job_executions', function (Blueprint $table) {
             $table->id();
-            $table->string('job_class', 1024);
+            $table->string('job_class');
             $table->uuid('job_uuid')->nullable();
             $table->string('tracking_id', 22)->unique();
             $table->intOrBigIntBasedOnRelated('user_id', Schema::connection(null), 'users.id')->nullable();
