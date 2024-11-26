@@ -20,7 +20,12 @@ History is a Laravel package to manage the history of:
 - Define included/excluded fields on a per-model basis
 - Has a diff of the changed fields (old/new values)
 
-### Eloquent Model History
+### Job Tracking
+
+- Track the execution status of Laravel Jobs
+- Set and read the completion % of a job execution
+- Write logs for job executions
+- Detect the user that has executed the job
 
 ## Alternatives
 
@@ -32,6 +37,11 @@ Other alternatives:
 - https://github.com/seancheung/history
 - https://github.com/spatie/laravel-activitylog
 - https://github.com/VentureCraft/revisionable
+
+Job Tracker alternatives:
+- https://tobytwigger.github.io/laravel-job-status/
+- https://github.com/mateusjunges/trackable-jobs-for-laravel
+- https://github.com/imTigger/laravel-job-status
 
 ## Changelog
 
