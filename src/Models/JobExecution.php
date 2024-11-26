@@ -198,12 +198,12 @@ class JobExecution extends Model implements JobExecutionContract
         return $query->where('job_class', $jobClass);
     }
 
-    protected function actives(Builder $query): Builder
+    protected function scopeActives(Builder $query): Builder
     {
         return $query->whereNull('completed_at')->whereNull('failed_at');
     }
 
-    protected function ended(Builder $query): Builder
+    protected function scopeEnded(Builder $query): Builder
     {
         return $query->whereNotNull('completed_at')->whereNotNull('failed_at');
     }
