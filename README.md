@@ -8,10 +8,21 @@
 
 This package provides features to:
 
-1. Log changes, diff and comments to Eloquent models;
-2. Track and log the execution history of Laravel background jobs;
+1. Log changes, diff and comments to **Eloquent Models**;
+2. Track and log the execution history of Laravel **Background Jobs**;
 
-### Model History
+## Model History
+
+**Features**:
+
+- Record model creation, update, delete, and retrieval
+- Add optional comments to events
+- Add comment-only history events
+- Automatically record the IP, URL, user agent and user ids when in an HTTP context
+- Automatically detect the CLI, the command name when in an artisan command
+- Automatically detect the queue and the job when running in a queued job
+- Define included/excluded fields on a per-model basis
+- Has a diff of the changed fields (old/new values)
 
 ```php
 $task = Task::create(['title' => 'Get milk', 'status' => 'todo']);
@@ -21,10 +32,18 @@ $task->update(['status' => 'done']);
 History::logRecentUpdate($task);
 ```
 
-### Job History
+## Job History
 
 The goal of tracking a job is to be able to show the status and updates of a background job on frontends.
-It is similar to logging, but is always scoped to a given job execution, and it has a state
+It is similar to logging, but is always scoped to a given job execution, and adds state to each job execution.
+
+**Features**:
+
+- Track the execution status of Laravel Jobs
+- Set and read the completion % of a job execution
+- Write logs for job executions
+- Detect the user that has executed the job
+
 
 ```php
 class MyJob implements \Konekt\History\Contracts\TrackableJob
@@ -42,7 +61,7 @@ class MyJob implements \Konekt\History\Contracts\TrackableJob
         $tracker->started();
         try {
             foreach ($this->dataToProcess as $data) {
-                do_something_with($data);
+                Do::something()->withThe($data);
                 $tracker->advance();
                 $tracker->logInfo('An entry was processed');
             }
@@ -55,17 +74,6 @@ class MyJob implements \Konekt\History\Contracts\TrackableJob
 
 MyJob::dispatch($myDataToProcess);
 ```
-
-## Features
-
-- Record model creation, update, delete, and retrieval
-- Add optional comments to events
-- Add comment-only history events
-- Automatically record the IP, URL, user agent and user ids when in an HTTP context
-- Automatically detect the CLI, the command name when in an artisan command
-- Automatically detect the queue and the job when running in a queued job
-- Define included/excluded fields on a per-model basis
-- Has a diff of the changed fields (old/new values)
 
 ## Requirements
 
