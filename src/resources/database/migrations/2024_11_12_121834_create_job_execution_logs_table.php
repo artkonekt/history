@@ -11,7 +11,7 @@ return new class () extends Migration {
     {
         Schema::create('job_execution_logs', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('job_execution_id')->constrained();
+            $table->foreignId('job_execution_id')->constrained()->onDelete('cascade');
             $table->timestamp('happened_at');
             $table->string('level', 9);
             $table->text('message');
