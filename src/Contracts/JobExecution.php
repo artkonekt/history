@@ -49,6 +49,8 @@ interface JobExecution
 
     public function logDebug(string $message, array $context = []): JobExecutionLog;
 
+    public function lastTimeSomethingHasHappenedWithIt(): \DateTimeInterface;
+
     /** @return Collection|JobExecutionLog[] */
     public function getLogs(): Collection;
 

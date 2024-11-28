@@ -193,6 +193,20 @@ class JobExecution extends Model implements JobExecutionContract
         return $this->user;
     }
 
+    public function lastTimeSomethingHasHappenedWithIt(): \DateTimeInterface
+    {
+        $lastLogEventDate = $this->logs()->max('happened_at');
+        $dates = [
+            $lastLogEventDate ? Carbon::parse($lastLogEventDate) : null,
+            $this->queued_at,
+            $this->started_at,
+            $this->completed_at,
+            $this->failed_at,
+        ];
+
+        return max(...$dates);
+    }
+
     protected function scopeOfJobClass(Builder $query, string $jobClass): Builder
     {
         return $query->where('job_class', $jobClass);
