@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace Konekt\History\Contracts;
 
 use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 
 interface JobExecution
@@ -49,7 +50,7 @@ interface JobExecution
 
     public function logDebug(string $message, array $context = []): JobExecutionLog;
 
-    public function lastTimeSomethingHasHappenedWithIt(): \DateTimeInterface;
+    public function lastTimeSomethingHasHappenedWithIt(): Carbon;
 
     /** @return Collection|JobExecutionLog[] */
     public function getLogs(): Collection;

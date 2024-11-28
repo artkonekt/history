@@ -193,7 +193,7 @@ class JobExecution extends Model implements JobExecutionContract
         return $this->user;
     }
 
-    public function lastTimeSomethingHasHappenedWithIt(): \DateTimeInterface
+    public function lastTimeSomethingHasHappenedWithIt(): Carbon
     {
         $lastLogEventDate = $this->logs()->max('happened_at');
         $dates = [
