@@ -171,4 +171,48 @@ class JobExecutionTest extends TestCase
 
         $this->assertEquals('2024-11-27 14:00:20', $job->lastTimeSomethingHasHappenedWithIt()->format('Y-m-d H:i:s'));
     }
+
+    /** @test */
+    public function the_actives_scope_returns_the_records_where_neither_completed_at_nor_failed_at_are_set()
+    {
+        JobExecution::ofJobClass(SampleTrackableJob::class)->delete();
+
+        $this->createSampleJobExecution();
+        $this->createSampleJobExecution();
+        $this->createSampleJobExecution();
+        $this->createSampleJobExecution();
+        $this->createSampleJobExecution(['failed_at' => Carbon::now()]);
+        $this->createSampleJobExecution(['completed_at' => Carbon::now()]);
+        $this->createSampleJobExecution(['completed_at' => Carbon::now(), 'failed_at' => Carbon::now()]); // stupid, yeah
+
+        $this->assertCount(4, JobExecution::actives()->get());
+    }
+
+    /** @test */
+    public function the_ended_scope_returns_the_records_where_either_completed_at_or_failed_at_are_set()
+    {
+        JobExecution::ofJobClass(SampleTrackableJob::class)->delete();
+
+        $this->createSampleJobExecution();
+        $this->createSampleJobExecution();
+        $this->createSampleJobExecution(['failed_at' => Carbon::now()]);
+        $this->createSampleJobExecution(['completed_at' => Carbon::now()]);
+        $this->createSampleJobExecution(['completed_at' => Carbon::now(), 'failed_at' => Carbon::now()]);
+
+        $this->assertCount(3, JobExecution::ended()->get());
+    }
+
+    private function createSampleJobExecution(array $attributes = []): JobExecution
+    {
+        $data = array_merge(
+            [
+                'job_class' => SampleTrackableJob::class,
+                'tracking_id' => Str::ulid()->toBase58(),
+                'queued_at' => Carbon::now(),
+            ],
+            $attributes,
+        );
+
+        return JobExecution::create($data);
+    }
 }

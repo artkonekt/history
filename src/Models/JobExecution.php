@@ -219,7 +219,7 @@ class JobExecution extends Model implements JobExecutionContract
 
     protected function scopeEnded(Builder $query): Builder
     {
-        return $query->whereNotNull('completed_at')->whereNotNull('failed_at');
+        return $query->whereNotNull('completed_at')->orWhereNotNull('failed_at');
     }
 
     protected function log(string $message, string $level, array $context): JobExecutionLogContract
