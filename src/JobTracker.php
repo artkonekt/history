@@ -110,7 +110,7 @@ class JobTracker
     {
         if (null !== $model = $this->model()) {
             if ($message) {
-                $model->logInfo($message);
+                $model->logError($message);
             }
 
             $model->update(['failed_at' => Carbon::now()]);
