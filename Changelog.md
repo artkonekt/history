@@ -1,7 +1,7 @@
 # Eloquent History Changelog
 
-## Unreleased
-##### 2024-XX-YY
+## 1.6.1
+##### 2024-12-13
 
 - Fixed MySQL/Postgres truncation errors when the user-agent string is longer than 255 characters by truncating the string to 255 chars before inserting to the DB
 
