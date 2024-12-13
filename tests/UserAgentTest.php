@@ -16,7 +16,10 @@ namespace Konekt\History\Tests;
 
 use Illuminate\Http\Request;
 use Konekt\History\History;
+use Konekt\History\JobTracker;
+use Konekt\History\Models\JobExecution;
 use Konekt\History\Tests\Dummies\SampleTask;
+use Konekt\History\Tests\Dummies\SampleTrackableJob;
 
 class UserAgentTest extends TestCase
 {
@@ -25,16 +28,35 @@ class UserAgentTest extends TestCase
     /** @test */
     public function it_truncates_user_agent_strings_longer_than_255_characters_without_errors()
     {
-        $request = Request::create('/example-route', 'GET', [], [], [], [
-            'HTTP_USER_AGENT' => self::STUPID_UA_STRING,
-        ]);
-        app()->forgetInstance('request');
-        app()->singleton('request', fn () => $request);
+        $this->forgeRequestWithStupidUserAgent();
 
         $task = SampleTask::create(['title' => 'Task With a stupid Browser Agent String', 'status' => 'in-progress']);
         $entry = History::begin($task);
         $entry = $entry->fresh();
 
         $this->assertEquals(substr(self::STUPID_UA_STRING, 0, 255), $entry->user_agent);
+    }
+
+    /** @test */
+    public function it_truncates_the_user_agent_strings_longer_than_255_characters_when_using_the_job_tracker()
+    {
+        $this->forgeRequestWithStupidUserAgent();
+
+        JobExecution::ofJobClass(SampleTrackableJob::class)->delete();
+
+        $job = new SampleTrackableJob(new SampleTask());
+        $job->generateJobTrackingId();
+        $entry = JobTracker::createFor($job);
+
+        $this->assertEquals(substr(self::STUPID_UA_STRING, 0, 255), $entry->user_agent);
+    }
+
+    private function forgeRequestWithStupidUserAgent(): void
+    {
+        $request = Request::create('/example-route', 'GET', [], [], [], [
+            'HTTP_USER_AGENT' => self::STUPID_UA_STRING,
+        ]);
+        app()->forgetInstance('request');
+        app()->singleton('request', fn () => $request);
     }
 }

@@ -21,6 +21,7 @@ use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Request;
+use Illuminate\Support\Str;
 use Konekt\History\Contracts\JobExecution;
 use Konekt\History\Contracts\JobExecutionLog;
 use Konekt\History\Contracts\JobStatus;
@@ -203,7 +204,7 @@ class JobTracker
             'tracking_id' => $job->getJobTrackingId(),
             'user_id' => Auth::id(),
             'ip_address' => Request::ip(),
-            'user_agent' => Request::userAgent(),
+            'user_agent' => Str::limit(Request::userAgent(), 255, ''),
         ];
     }
 
