@@ -37,5 +37,4 @@ class UserAgentTest extends TestCase
 
         $this->assertEquals(self::STUPID_UA_STRING, $entry->user_agent);
     }
-
 }
