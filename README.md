@@ -77,7 +77,7 @@ MyJob::dispatch($myDataToProcess);
 
 ## Requirements
 
-It requires PHP 8.1+ and Laravel 10 or 11.
+It requires PHP 8.1+ and Laravel 10, 11 or 12.
 
 It has been tested with:
 - PHP 8.1, 8.2, 8.3 & 8.4
@@ -85,7 +85,7 @@ It has been tested with:
 - MySQL 5.7, 8.0, 8.2 & 8.4,
 - PostgreSQL 12, 16 & 17.
 
-It is known that this library, **Laravel 11.0 and PostgreSQL 11 don't work together**, therefore it is
+It is known that this library, **Laravel 11.0/12.0 and PostgreSQL 11 don't work together**, therefore it is
 recommended to use at least Postgres version 12 or higher in case your DB engine is Postgres.
 
 ## Documentation

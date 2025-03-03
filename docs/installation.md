@@ -2,9 +2,9 @@
 
 ## Prerequisites
 
-PHP 8.1+ and Laravel 10 or 11.
+PHP 8.1+ and Laravel 10, 11 or 12.
 
-!> **Avoid using PostgresSQL 11** or older since it is known to have bugs when using together with this library and Laravel 11!
+!> **Avoid using PostgresSQL 11** or older since it is known to have bugs when using together with this library and Laravel 11/12!
 
 You can install the package via composer:
 
