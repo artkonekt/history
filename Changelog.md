@@ -1,7 +1,7 @@
 # Eloquent History Changelog
 
-## Unreleased
-##### 2025-XX-YY
+## 1.7.0
+##### 2025-03-03
 
 - Added Laravel 12 support
 
