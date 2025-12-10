@@ -95,7 +95,7 @@ It is also possible to set an arbitrary value as the `action_name` when logging 
 
 ```php
 $order->createForUser($user, $request->validated());
-History::logActionSuccess($user, "Order {$order->number} in value of {$order->total} EUR", 'purchase');
+History::logActionSuccess($user, "Order {$order->number}", 'purchase');
 ```
 
 The `action_name` is optional similarly to the `details` parameter, and is null by default.
