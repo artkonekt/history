@@ -27,6 +27,7 @@ interface ModelHistoryEvent
     /**
      * @todo V2 interface candidates
      * public function details(): ?string;
+     * public function actionName(): ?string;
      */
 
     public function isASingleFieldChange(): bool;

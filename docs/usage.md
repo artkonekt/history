@@ -89,6 +89,23 @@ successfully or failed.
 
 > For non-action events, the `was_successful` field is `null` indicating that there's no "success" information available
 
+#### Action Names
+
+It is also possible to set an arbitrary value as the `action_name` when logging actions.
+
+```php
+$order->createForUser($user, $request->validated());
+History::logActionSuccess($user, "Order {$order->number} in value of {$order->total} EUR", 'purchase');
+```
+
+The `action_name` is optional similarly to the `details` parameter, and is null by default.
+
+It is also possible to set an action name, but omit the details:
+
+```php
+History::logActionFailure($user, actionName: 'subscription_renewal');
+```
+
 ## Retrieve History Events
 
 To get the list of event of a model use the following code:

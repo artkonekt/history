@@ -39,6 +39,7 @@ use Konekt\History\Diff\Diff;
  * @property string|null $comment
  * @property bool|null $was_successful
  * @property string|null $details
+ * @property string|null $action_name
  * @property Carbon $happened_at
  * @property Carbon $created_at
  * @property Carbon $updated_at
@@ -101,7 +102,7 @@ class ModelHistoryEvent extends Model implements ModelHistoryEventContract
             Operation::COMMENT => __('Comment has been added'),
             Operation::DELETE => __('Has been deleted'),
             Operation::RETRIEVE => __('Was retrieved'),
-            Operation::ACTION => $this->was_successful ? __('Executed successfully') : __('Execution failed'),
+            Operation::ACTION => $this->actionSummaryText(),
             default => '',
         };
     }
@@ -114,6 +115,11 @@ class ModelHistoryEvent extends Model implements ModelHistoryEventContract
     public function details(): ?string
     {
         return $this->details;
+    }
+
+    public function actionName(): ?string
+    {
+        return $this->action_name;
     }
 
     public function isASingleFieldChange(): bool
@@ -134,5 +140,15 @@ class ModelHistoryEvent extends Model implements ModelHistoryEventContract
     public function isAnActionEvent(): bool
     {
         return $this->operation->is_action;
+    }
+
+    protected function actionSummaryText(): string
+    {
+        if (null === $this->action_name) {
+            $this->was_successful ? __('Executed successfully') : __('Execution failed');
+        }
+
+        $p = ['action' => $this->action_name];
+        return $this->was_successful ? __('Successful :action', $p) : __('Failed :action', $p);
     }
 }

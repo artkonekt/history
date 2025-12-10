@@ -106,6 +106,7 @@ class HistoryTest extends TestCase
         $this->assertEmpty($event->diff()->changes());
         $this->assertNull($event->comment());
         $this->assertNull($event->details());
+        $this->assertNull($event->actionName());
     }
 
     /** @test */
@@ -134,6 +135,7 @@ class HistoryTest extends TestCase
         $this->assertEmpty($event->diff()->changes());
         $this->assertNull($event->comment());
         $this->assertNull($event->details());
+        $this->assertNull($event->actionName());
     }
 
     /** @test */
@@ -147,6 +149,38 @@ class HistoryTest extends TestCase
         $this->assertFalse($event->was_successful);
         $this->assertEquals('Error connecting to the Remote API', $event->details());
         $this->assertNull($event->comment());
+    }
+
+    /** @test */
+    public function it_can_record_a_successful_action_with_name()
+    {
+        $task = SampleTask::create(['title' => 'Hello 40', 'description' => 'Make me 41', 'status' => 'todo']);
+
+        $event = History::logActionSuccess($task, actionName: 'completion');
+
+        $this->assertEquals(Operation::ACTION, $event->operation->value());
+        $this->assertTrue($event->was_successful);
+        $this->assertTrue($event->diff()->isEmpty());
+        $this->assertEmpty($event->diff()->changes());
+        $this->assertNull($event->comment());
+        $this->assertNull($event->details());
+        $this->assertEquals('completion', $event->actionName());
+    }
+
+    /** @test */
+    public function it_can_record_a_failed_action_with_name()
+    {
+        $task = SampleTask::create(['title' => 'Hello 50', 'description' => 'Make me 51', 'status' => 'todo']);
+
+        $event = History::logActionFailure($task, actionName: 'drop');
+
+        $this->assertEquals(Operation::ACTION, $event->operation->value());
+        $this->assertFalse($event->was_successful);
+        $this->assertTrue($event->diff()->isEmpty());
+        $this->assertEmpty($event->diff()->changes());
+        $this->assertNull($event->comment());
+        $this->assertNull($event->details());
+        $this->assertEquals('drop', $event->actionName());
     }
 
     /** @test */
