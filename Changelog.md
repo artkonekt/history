@@ -1,5 +1,12 @@
 # Eloquent History Changelog
 
+## Unreleased
+##### 2025-XX-YY
+
+- Added PHP 8.5 support
+- Dropped PHP 8.1 support
+- Changed the minimum Laravel version requirements to v10.48, v11.46.2 and v12.38 respectively
+
 ## 1.7.0
 ##### 2025-03-03
 

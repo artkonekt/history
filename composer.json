@@ -11,12 +11,12 @@
         "issues": "https://github.com/artkonekt/history/issues"
     },
     "require": {
-        "php": "^8.1",
+        "php": "^8.2",
         "konekt/concord": "^1.13",
         "konekt/enum": "^3.1|^4.0",
         "konekt/enum-eloquent": "^1.9",
-        "illuminate/database": "^10.10.1|^11.0|^12.0",
-        "illuminate/support": "^10.10.1|^11.0|^12.0",
+        "illuminate/database": "^10.48|^11.46.2|^12.38",
+        "illuminate/support": "^10.48|^11.46.2|^12.38",
         "konekt/laravel-migration-compatibility": "^1.6"
     },
     "require-dev": {
