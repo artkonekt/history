@@ -6,6 +6,7 @@
 - II. How To Use
     - [Usage](usage.md)
     - [Trackable Models](trackables.md)
+    - [Job Tracking](job-tracking.md)
     - [Scenes](scenes.md)
     - [Diffs](diffs.md)
     - [Customization](customization.md)
