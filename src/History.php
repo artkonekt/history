@@ -126,7 +126,22 @@ class History
         static::$sceneResolver = null;
     }
 
-    public function get(bool $latestOnTop = true): Collection
+    public function get(bool $latestOnTop = true, ?int $limit = null): Collection
+    {
+        $q = $this->query($latestOnTop);
+        if (null !== $limit) {
+            $q->limit($limit);
+        }
+
+        return $q->get();
+    }
+
+    public function paginate(int $perPage = 50, ?int $page = null, bool $latestOnTop = true)
+    {
+        return $this->query($latestOnTop)->paginate($perPage, page: $page);
+    }
+
+    protected function query(bool $latestOnTop = true): Builder
     {
         /** @var Builder $query */
         $query = ModelHistoryEventProxy::query();
@@ -135,7 +150,7 @@ class History
                 ->where('model_id', $this->ofModel->id);
         }
 
-        return $query->with('user')->orderBy('happened_at', $latestOnTop ? 'desc' : 'asc')->get();
+        return $query->with('user')->orderBy('happened_at', $latestOnTop ? 'desc' : 'asc');
     }
 
     protected static function commonFields(Model $model): array

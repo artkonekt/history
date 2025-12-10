@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace Konekt\History\Tests;
 
 use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -181,6 +182,41 @@ class HistoryTest extends TestCase
         $this->assertNull($event->comment());
         $this->assertNull($event->details());
         $this->assertEquals('drop', $event->actionName());
+    }
+
+    /** @test */
+    public function it_can_limit_the_number_of_entries_returned()
+    {
+        $task = SampleTask::create(['title' => 'Hello 60', 'description' => 'Make me 61', 'status' => 'todo']);
+
+        for ($i = 0; $i < 5; $i++) {
+            History::logActionSuccess($task);
+        }
+
+        $this->assertCount(5, History::of($task)->get());
+        $this->assertCount(3, History::of($task)->get(limit: 3));
+    }
+
+    /** @test */
+    public function it_can_paginate_the_entries_returned()
+    {
+        $task = SampleTask::create(['title' => 'Hello 70', 'description' => 'Make me 71', 'status' => 'todo']);
+
+        for ($i = 0; $i < 20; $i++) {
+            History::logActionSuccess($task);
+        }
+
+        $this->assertCount(20, History::of($task)->get());
+        $paginatedResults = History::of($task)->paginate(10);
+        $this->assertInstanceOf(LengthAwarePaginator::class, $paginatedResults);
+        $this->assertCount(10, $paginatedResults->items());
+        $this->assertEquals(1, $paginatedResults->currentPage());
+        $this->assertTrue($paginatedResults->hasMorePages());
+
+        $secondPage = History::of($task)->paginate(10, 2);
+        $this->assertCount(10, $secondPage->items());
+        $this->assertEquals(2, $secondPage->currentPage());
+        $this->assertFalse($secondPage->hasMorePages());
     }
 
     /** @test */

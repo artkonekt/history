@@ -4,6 +4,8 @@
 ##### 2025-XX-YY
 
 - Added the `action_name` field and the `actionName()` getter method to history events
+- Added support for limiting the number of returned events to the History get method
+- Added support for paginating the retrieved history events
 - Added PHP 8.5 support
 - Dropped PHP 8.1 support
 - Changed the minimum Laravel version requirements to v10.48, v11.46.2 and v12.38 respectively

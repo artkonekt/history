@@ -146,6 +146,29 @@ have them in a chronological order pass `false` to the get method:
 \Konekt\History\History::of($model)->get(latestOnTop: false);
 ```
 
+### Limit Returned Events
+
+It is possible to take a specific number of events instead of all of them:
+
+```php
+$mostRecent50Events = History::of($order)->get(limit: 50);
+
+$oldest3Events = History::of($order)->get(latestOnTop: false, limit: 3);
+```
+
+Alternatively, you can also paginate the events. The `paginate()` method returns a `LengthAwarePaginator` instance:
+
+```php
+// Returns the most recent 20 events:
+History::of($issue)->paginate(20);
+
+// Returns the second 100 events (101-200):
+History::of($issue)->paginate(100, page: 2);
+
+// Similarly to get, you can also sort to oldest events first:
+\Konekt\History\History::of($issue)->paginate(perPage: 25, latestOnTop: false)
+```
+
 ---
 
 **Next**: [Trackable Models &raquo;](trackables.md)
