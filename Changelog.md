@@ -1,7 +1,7 @@
 # Eloquent History Changelog
 
-## Unreleased
-##### 2025-XX-YY
+## 1.8.0
+##### 2025-12-10
 
 - Added the `action_name` field and the `actionName()` getter method to history events
 - Added support for limiting the number of returned events to the History get method
