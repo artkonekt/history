@@ -1,7 +1,7 @@
 # Eloquent History Changelog
 
-## Unreleased
-##### 2025-XX-YY
+## 1.9.0
+##### 2025-12-26
 
 - Changed the internal lookup of the history event's model to find soft-deleted models as well
 
