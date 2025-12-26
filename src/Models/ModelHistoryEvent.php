@@ -71,7 +71,7 @@ class ModelHistoryEvent extends Model implements ModelHistoryEventContract
 
     public function model(): MorphTo
     {
-        return $this->morphTo();
+        return $this->morphTo()->withTrashed();
     }
 
     public function user(): BelongsTo
