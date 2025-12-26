@@ -1,5 +1,10 @@
 # Eloquent History Changelog
 
+## Unreleased
+##### 2025-XX-YY
+
+- Fixed the order of history entries in case they have the same timestamp by adding `id` field as a secondary order column
+
 ## 1.9.0
 ##### 2025-12-26
 

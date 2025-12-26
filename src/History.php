@@ -150,7 +150,9 @@ class History
                 ->where('model_id', $this->ofModel->id);
         }
 
-        return $query->with('user')->orderBy('happened_at', $latestOnTop ? 'desc' : 'asc');
+        return $query->with('user')
+            ->orderBy('happened_at', $latestOnTop ? 'desc' : 'asc')
+            ->orderBy('id', $latestOnTop ? 'desc' : 'asc');
     }
 
     protected static function commonFields(Model $model): array
