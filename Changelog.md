@@ -1,7 +1,7 @@
 # Eloquent History Changelog
 
-## Unreleased
-##### 2026-XX-YY
+## 1.10.0
+##### 2026-04-17
 
 - Added Laravel 13 support
 - Dropped Laravel 10 support
