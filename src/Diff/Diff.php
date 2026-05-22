@@ -51,7 +51,7 @@ class Diff implements Arrayable
             if (!in_array($field, $ignore)) {
                 $changes[$field] = ['n' => self::redact($model, $field, $newValue)];
                 if (null !== $before && array_key_exists($field, $before)) {
-                    $changes[$field]['o'] = $before[$field];
+                    $changes[$field]['o'] = self::redact($model, $field, $before[$field]);
                 }
             }
         }

@@ -84,25 +84,46 @@ class TrackableTest extends TestCase
 
     #[Test] public function it_redacts_with_the_default_redactor_if_redact_in_history_returns_true()
     {
-        $product = SampleTrackableWithDefaultRedact::create(['name' => 'Copy Paste Ltd', 'country' => 'CA', 'api_key' => 'not so secret']);
+        $client = SampleTrackableWithDefaultRedact::create(['name' => 'Copy Paste Ltd', 'country' => 'CA', 'api_key' => 'not so secret']);
 
-        $event = History::begin($product);
+        $event = History::begin($client);
 
         $this->assertEquals('******', $event->diff()->changeOf('api_key')->new);
+
+        $before = $client->getAttributes();
+        $client->update(['api_key' => 'now it is secret']);
+        $event2 = History::logUpdate($client, $before);
+
+        $this->assertEquals('******', $event2->diff()->changeOf('api_key')->old);
+        $this->assertEquals('******', $event2->diff()->changeOf('api_key')->new);
+
+        $before = $client->getAttributes();
+        $client->update(['api_key' => null]);
+        $event3 = History::logUpdate($client, $before);
+
+        $this->assertEquals('******', $event3->diff()->changeOf('api_key')->old);
+        $this->assertNull($event3->diff()->changeOf('api_key')->new);
     }
 
     #[Test] public function it_redacts_with_the_closure_if_redact_in_history_returns_a_closure()
     {
-        $product = SampleTrackableWithDefaultRedact::create(['name' => 'Copy Paste Ltd', 'country' => 'CA', 'api_key' => 'not so secret']);
+        $client = SampleTrackableWithDefaultRedact::create(['name' => 'Copy Paste Ltd', 'country' => 'CA', 'api_key' => 'not so secret']);
 
-        $event = History::begin($product);
+        $event = History::begin($client);
 
         $this->assertEquals('REDACTED', $event->diff()->changeOf('name')->new);
 
-        $product->update(['name' => '42']);
+        $client->update(['name' => '42']);
 
-        $event2 = History::logRecentUpdate($product);
+        $event2 = History::logRecentUpdate($client);
 
         $this->assertEquals('The meaning of life', $event2->diff()->changeOf('name')->new);
+
+        $before = $client->getAttributes();
+        $client->update(['name' => 'Not the meaning of life']);
+        $event3 = History::logUpdate($client, $before);
+
+        $this->assertEquals('The meaning of life', $event3->diff()->changeOf('name')->old);
+        $this->assertEquals('REDACTED', $event3->diff()->changeOf('name')->new);
     }
 }
