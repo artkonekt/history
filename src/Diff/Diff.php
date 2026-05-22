@@ -80,22 +80,6 @@ class Diff implements Arrayable
         return new self($changes);
     }
 
-    private static function redact(Model $model, string $field, mixed $value): mixed
-    {
-        if ($model instanceof Trackable) {
-            $redactor = $model->redactInHistory($field, $value);
-            if (is_callable($redactor)) {
-                return $redactor($value);
-            }
-
-            if (true === $redactor) { // The default redactor
-                return null === $value ? null : '******';
-            }
-        }
-
-        return $value;
-    }
-
     public function hasChanged(string $field): bool
     {
         return array_key_exists($field, $this->changes);
@@ -169,5 +153,21 @@ class Diff implements Arrayable
                 return [$field => $values];
             },
         );
+    }
+
+    private static function redact(Model $model, string $field, mixed $value): mixed
+    {
+        if ($model instanceof Trackable) {
+            $redactor = $model->redactInHistory($field, $value);
+            if (is_callable($redactor)) {
+                return $redactor($value);
+            }
+
+            if (true === $redactor) { // The default redactor
+                return null === $value ? null : '******';
+            }
+        }
+
+        return $value;
     }
 }

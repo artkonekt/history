@@ -73,7 +73,6 @@ class TrackableTest extends TestCase
         $this->assertArrayNotHasKey('api_key', $event->diff()->changes());
     }
 
-
     #[Test] public function it_does_not_redact_field_values_if_redact_in_history_returns_false()
     {
         $product = SampleTrackableWithDefaultRedact::create(['name' => 'Copy Paste Ltd', 'country' => 'CA', 'api_key' => 'not so secret']);

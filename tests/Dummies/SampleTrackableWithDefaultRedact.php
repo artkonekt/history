@@ -31,7 +31,7 @@ class SampleTrackableWithDefaultRedact extends Model implements Trackable
 
     public function redactInHistory(string $field, mixed $value): bool|\Closure
     {
-        return match($field) {
+        return match ($field) {
             'name' => fn ($v) => '42' === $v ? 'The meaning of life' : 'REDACTED',
             'api_key' => true,
             default => false,
