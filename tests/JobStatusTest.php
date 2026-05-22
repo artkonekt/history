@@ -5,10 +5,11 @@ declare(strict_types=1);
 namespace Konekt\History\Tests;
 
 use Konekt\History\Models\JobStatus;
+use PHPUnit\Framework\Attributes\Test;
 
 class JobStatusTest extends TestCase
 {
-    /** @test */
+    #[Test]
     public function it_can_tell_whether_it_has_ended()
     {
         $completed = JobStatus::COMPLETED();
@@ -22,7 +23,7 @@ class JobStatusTest extends TestCase
         $this->assertFalse($processing->hasEnded());
     }
 
-    /** @test */
+    #[Test]
     public function it_can_tell_whether_it_is_active()
     {
         $queued = JobStatus::QUEUED();

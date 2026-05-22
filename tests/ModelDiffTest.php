@@ -17,10 +17,11 @@ namespace Konekt\History\Tests;
 use Konekt\History\Diff\Diff;
 use Konekt\History\Diff\Undefined;
 use Konekt\History\Tests\Dummies\SampleTask;
+use PHPUnit\Framework\Attributes\Test;
 
 class ModelDiffTest extends TestCase
 {
-    /** @test */
+    #[Test]
     public function it_can_process_the_changes_of_an_eloquent_model()
     {
         $task = SampleTask::create(['title' => 'This is a task', 'status' => 'backlog']);
@@ -46,7 +47,7 @@ class ModelDiffTest extends TestCase
         $this->assertEquals(27, $diff->new('assigned_to'));
     }
 
-    /** @test */
+    #[Test]
     public function it_excludes_id_and_timestamps_fields_by_default()
     {
         $task = SampleTask::create(['title' => 'Task', 'status' => 'todo']);

@@ -20,12 +20,13 @@ use Konekt\History\JobTracker;
 use Konekt\History\Models\JobExecution;
 use Konekt\History\Tests\Dummies\SampleTask;
 use Konekt\History\Tests\Dummies\SampleTrackableJob;
+use PHPUnit\Framework\Attributes\Test;
 
 class UserAgentTest extends TestCase
 {
     private const STUPID_UA_STRING = 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_6_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/21G93 [FBAN/FBIOS;FBAV/492.0.0.101.111;FBBV/670308045;FBDV/iPhone14,5;FBMD/iPhone;FBSN/iOS;FBSV/17.6.1;FBSS/3;FBID/phone;FBLC/de_DE;FBOP/5;FBRV/673456666]';
 
-    /** @test */
+    #[Test]
     public function it_truncates_user_agent_strings_longer_than_255_characters_without_errors()
     {
         $this->forgeRequestWithStupidUserAgent();
@@ -37,7 +38,7 @@ class UserAgentTest extends TestCase
         $this->assertEquals(substr(self::STUPID_UA_STRING, 0, 255), $entry->user_agent);
     }
 
-    /** @test */
+    #[Test]
     public function it_truncates_the_user_agent_strings_longer_than_255_characters_when_using_the_job_tracker()
     {
         $this->forgeRequestWithStupidUserAgent();

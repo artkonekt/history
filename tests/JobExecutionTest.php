@@ -12,10 +12,11 @@ use Konekt\History\Models\JobExecution;
 use Konekt\History\Models\JobStatus;
 use Konekt\History\Tests\Dummies\SampleTask;
 use Konekt\History\Tests\Dummies\SampleTrackableJob;
+use PHPUnit\Framework\Attributes\Test;
 
 class JobExecutionTest extends TestCase
 {
-    /** @test */
+    #[Test]
     public function it_can_find_and_entry_by_tracking_id()
     {
         JobExecution::ofJobClass(SampleTrackableJob::class)->delete();
@@ -30,7 +31,7 @@ class JobExecutionTest extends TestCase
         $this->assertEquals($job->getJobTrackingId(), $execution->tracking_id);
     }
 
-    /** @test */
+    #[Test]
     public function it_can_return_the_entries_of_a_given_job_class()
     {
         JobExecution::ofJobClass(SampleTrackableJob::class)->delete();
@@ -45,7 +46,7 @@ class JobExecutionTest extends TestCase
         $this->assertCount(10, $entries);
     }
 
-    /** @test */
+    #[Test]
     public function it_can_return_the_active_entries_of_a_given_job_class()
     {
         JobExecution::ofJobClass(SampleTrackableJob::class)->delete();
@@ -70,7 +71,7 @@ class JobExecutionTest extends TestCase
         $this->assertCount(2, $entries);
     }
 
-    /** @test */
+    #[Test]
     public function it_can_return_the_entries_of_a_given_job_class_and_limit_the_record_count()
     {
         JobExecution::ofJobClass(SampleTrackableJob::class)->delete();
@@ -85,7 +86,7 @@ class JobExecutionTest extends TestCase
         $this->assertCount(5, $entries);
     }
 
-    /** @test */
+    #[Test]
     public function it_returns_the_queued_at_date_as_last_time_something_has_happened_to_it_when_there_are_no_logs_and_no_other_event_dates_recorded()
     {
         JobExecution::ofJobClass(SampleTrackableJob::class)->delete();
@@ -100,7 +101,7 @@ class JobExecutionTest extends TestCase
         $this->assertEquals('2024-11-27 11:35:27', $job->lastTimeSomethingHasHappenedWithIt()->format('Y-m-d H:i:s'));
     }
 
-    /** @test */
+    #[Test]
     public function it_returns_the_started_at_date_as_last_time_something_has_happened_to_it_when_there_is_an_earlier_queued_at_date_but_there_are_no_logs_and_no_other_event_dates_recorded()
     {
         JobExecution::ofJobClass(SampleTrackableJob::class)->delete();
@@ -116,7 +117,7 @@ class JobExecutionTest extends TestCase
         $this->assertEquals('2024-11-27 11:35:35', $job->lastTimeSomethingHasHappenedWithIt()->format('Y-m-d H:i:s'));
     }
 
-    /** @test */
+    #[Test]
     public function it_returns_the_completed_at_date_as_last_time_something_has_happened_to_it_when_there_are_earlier_queued_at_and_started_at_dates_and_there_are_no_logs()
     {
         JobExecution::ofJobClass(SampleTrackableJob::class)->delete();
@@ -133,7 +134,7 @@ class JobExecutionTest extends TestCase
         $this->assertEquals('2024-11-27 11:37:02', $job->lastTimeSomethingHasHappenedWithIt()->format('Y-m-d H:i:s'));
     }
 
-    /** @test */
+    #[Test]
     public function it_returns_the_failed_at_date_as_last_time_something_has_happened_to_it_when_there_are_earlier_queued_at_and_started_at_dates_and_there_are_no_logs()
     {
         JobExecution::ofJobClass(SampleTrackableJob::class)->delete();
@@ -151,7 +152,7 @@ class JobExecutionTest extends TestCase
         $this->assertEquals('2024-11-27 11:38:18', $job->lastTimeSomethingHasHappenedWithIt()->format('Y-m-d H:i:s'));
     }
 
-    /** @test */
+    #[Test]
     public function it_returns_the_latest_log_date_when_any_of_the_log_entries_are_later_then_the_status_timestamp_fields()
     {
         JobExecution::ofJobClass(SampleTrackableJob::class)->delete();
@@ -172,7 +173,7 @@ class JobExecutionTest extends TestCase
         $this->assertEquals('2024-11-27 14:00:20', $job->lastTimeSomethingHasHappenedWithIt()->format('Y-m-d H:i:s'));
     }
 
-    /** @test */
+    #[Test]
     public function the_actives_scope_returns_the_records_where_neither_completed_at_nor_failed_at_are_set()
     {
         JobExecution::ofJobClass(SampleTrackableJob::class)->delete();
@@ -188,7 +189,7 @@ class JobExecutionTest extends TestCase
         $this->assertCount(4, JobExecution::actives()->get());
     }
 
-    /** @test */
+    #[Test]
     public function the_ended_scope_returns_the_records_where_either_completed_at_or_failed_at_are_set()
     {
         JobExecution::ofJobClass(SampleTrackableJob::class)->delete();

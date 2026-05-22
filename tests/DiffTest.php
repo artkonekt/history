@@ -17,11 +17,12 @@ namespace Konekt\History\Tests;
 use Konekt\History\Diff\Change;
 use Konekt\History\Diff\Diff;
 use Konekt\History\Diff\Undefined;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase as PhpUnitTestCase;
 
 class DiffTest extends PhpUnitTestCase
 {
-    /** @test */
+    #[Test]
     public function it_can_be_instantiated_from_an_array()
     {
         $diff = new Diff([
@@ -38,7 +39,7 @@ class DiffTest extends PhpUnitTestCase
         $this->assertEquals(2, $diff->changeCount());
     }
 
-    /** @test */
+    #[Test]
     public function it_can_tell_if_a_field_has_changed()
     {
         $diff = new Diff([
@@ -57,7 +58,7 @@ class DiffTest extends PhpUnitTestCase
         $this->assertFalse($diff->hasChanged('created_at'));
     }
 
-    /** @test */
+    #[Test]
     public function it_can_return_the_old_and_new_values_of_fields()
     {
         $diff = new Diff([
@@ -77,7 +78,7 @@ class DiffTest extends PhpUnitTestCase
         $this->assertEquals(3, $diff->new('shipment_id'));
     }
 
-    /** @test */
+    #[Test]
     public function change_of_and_old_and_new_values_return_null_for_unchanged_fields()
     {
         $diff = new Diff([]);
@@ -88,7 +89,7 @@ class DiffTest extends PhpUnitTestCase
         $this->assertNull($diff->changeOf('monkeys'));
     }
 
-    /** @test */
+    #[Test]
     public function a_simple_change_of_a_field_can_be_retrieved()
     {
         $diff = new Diff([
@@ -108,7 +109,7 @@ class DiffTest extends PhpUnitTestCase
         $this->assertEquals('Send it to my mom', $diff->new('note'));
     }
 
-    /** @test */
+    #[Test]
     public function it_can_handle_cases_when_the_old_value_is_undefined()
     {
         $diff = new Diff(['field' => ['n' => 'Something']]);
@@ -116,7 +117,7 @@ class DiffTest extends PhpUnitTestCase
         $this->assertInstanceOf(Undefined::class, $diff->old('field'));
     }
 
-    /** @test */
+    #[Test]
     public function undefined_values_are_not_present_when_converting_to_array()
     {
         $diff = new Diff(['field' => ['n' => 'Something']]);
@@ -124,7 +125,7 @@ class DiffTest extends PhpUnitTestCase
         $this->assertArrayNotHasKey('o', $diff->toArray()['field']);
     }
 
-    /** @test */
+    #[Test]
     public function it_can_be_instantiated_from_before_and_after_attribute_sets()
     {
         $diff = Diff::fromAttributeSets(
@@ -137,7 +138,7 @@ class DiffTest extends PhpUnitTestCase
         $this->assertEquals('in-progress', $diff->new('status'));
     }
 
-    /** @test */
+    #[Test]
     public function it_can_export_the_changes_to_an_array()
     {
         $raw = [
@@ -156,7 +157,7 @@ class DiffTest extends PhpUnitTestCase
         $this->assertEquals($raw, $diff->toArray());
     }
 
-    /** @test */
+    #[Test]
     public function the_change_can_tell_whether_its_old_or_new_value_is_undefined()
     {
         $diff = new Diff(['status' => ['n' => 'waiting']]);

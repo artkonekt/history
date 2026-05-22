@@ -28,10 +28,11 @@ use Konekt\History\Tests\Dummies\SampleJobWithDisplayName;
 use Konekt\History\Tests\Dummies\SampleSceneResolver;
 use Konekt\History\Tests\Dummies\SampleTask;
 use Konekt\History\Tests\Dummies\SampleTrackableClient;
+use PHPUnit\Framework\Attributes\Test;
 
 class HistoryTest extends TestCase
 {
-    /** @test */
+    #[Test]
     public function it_can_record_if_a_model_was_created()
     {
         $task = SampleTask::create(['title' => 'Hello', 'description' => 'Make me', 'status' => 'todo']);
@@ -47,7 +48,7 @@ class HistoryTest extends TestCase
         $this->assertNull($event->comment());
     }
 
-    /** @test */
+    #[Test]
     public function a_recent_update_can_be_recorded()
     {
         $task = SampleTask::create(['title' => 'Hello', 'description' => 'Make me', 'status' => 'todo']);
@@ -62,7 +63,7 @@ class HistoryTest extends TestCase
         $this->assertEquals(Operation::UPDATE, $event->operation->value());
     }
 
-    /** @test */
+    #[Test]
     public function update_with_explicit_before_fields_can_be_recorded()
     {
         $task = SampleTask::create(['title' => 'Go There', 'status' => 'todo']);
@@ -81,7 +82,7 @@ class HistoryTest extends TestCase
         $this->assertEquals('Been there', $event->diff()->new('description'));
     }
 
-    /** @test */
+    #[Test]
     public function non_diff_changes_can_be_manually_recorded()
     {
         $task = SampleTask::create(['title' => 'Hello', 'description' => 'Make me', 'status' => 'todo']);
@@ -94,7 +95,7 @@ class HistoryTest extends TestCase
         $this->assertEquals('Has timed out waiting', $event->comment());
     }
 
-    /** @test */
+    #[Test]
     public function it_can_record_a_successful_action()
     {
         $task = SampleTask::create(['title' => 'Hello', 'description' => 'Make me', 'status' => 'todo']);
@@ -110,7 +111,7 @@ class HistoryTest extends TestCase
         $this->assertNull($event->actionName());
     }
 
-    /** @test */
+    #[Test]
     public function it_can_record_a_successful_action_with_details()
     {
         $task = SampleTask::create(['title' => 'Hello', 'description' => 'Make me', 'status' => 'todo']);
@@ -123,7 +124,7 @@ class HistoryTest extends TestCase
         $this->assertNull($event->comment());
     }
 
-    /** @test */
+    #[Test]
     public function it_can_record_a_failed_action()
     {
         $task = SampleTask::create(['title' => 'Hello', 'description' => 'Make me', 'status' => 'todo']);
@@ -139,7 +140,7 @@ class HistoryTest extends TestCase
         $this->assertNull($event->actionName());
     }
 
-    /** @test */
+    #[Test]
     public function it_can_record_a_failed_action_with_details()
     {
         $task = SampleTask::create(['title' => 'Hello', 'description' => 'Make me', 'status' => 'todo']);
@@ -152,7 +153,7 @@ class HistoryTest extends TestCase
         $this->assertNull($event->comment());
     }
 
-    /** @test */
+    #[Test]
     public function it_can_record_a_successful_action_with_name()
     {
         $task = SampleTask::create(['title' => 'Hello 40', 'description' => 'Make me 41', 'status' => 'todo']);
@@ -168,7 +169,7 @@ class HistoryTest extends TestCase
         $this->assertEquals('completion', $event->actionName());
     }
 
-    /** @test */
+    #[Test]
     public function it_can_record_a_failed_action_with_name()
     {
         $task = SampleTask::create(['title' => 'Hello 50', 'description' => 'Make me 51', 'status' => 'todo']);
@@ -184,7 +185,7 @@ class HistoryTest extends TestCase
         $this->assertEquals('drop', $event->actionName());
     }
 
-    /** @test */
+    #[Test]
     public function it_can_limit_the_number_of_entries_returned()
     {
         $task = SampleTask::create(['title' => 'Hello 60', 'description' => 'Make me 61', 'status' => 'todo']);
@@ -197,7 +198,7 @@ class HistoryTest extends TestCase
         $this->assertCount(3, History::of($task)->get(limit: 3));
     }
 
-    /** @test */
+    #[Test]
     public function it_can_paginate_the_entries_returned()
     {
         $task = SampleTask::create(['title' => 'Hello 70', 'description' => 'Make me 71', 'status' => 'todo']);
@@ -219,7 +220,7 @@ class HistoryTest extends TestCase
         $this->assertFalse($secondPage->hasMorePages());
     }
 
-    /** @test */
+    #[Test]
     public function deletion_can_be_recorded()
     {
         $client = SampleTrackableClient::create(['name' => 'X Ltd.', 'country' => 'Denmark', 'api_key' => 'xxx']);
@@ -231,7 +232,7 @@ class HistoryTest extends TestCase
         $this->assertEquals(Operation::DELETE, $deleteEvent->operation->value());
     }
 
-    /** @test */
+    #[Test]
     public function it_detects_if_it_was_run_via_cli()
     {
         $task = SampleTask::create(['title' => 'Detect Via', 'status' => 'todo']);
@@ -242,7 +243,7 @@ class HistoryTest extends TestCase
         $this->assertEquals(Via::CLI(), $event->via);
     }
 
-    /** @test */
+    #[Test]
     public function it_detects_if_it_was_run_in_a_queued_job()
     {
         $task = SampleTask::create(['title' => 'In A Queue', 'status' => 'in-progress']);
@@ -254,7 +255,7 @@ class HistoryTest extends TestCase
         $this->assertEquals(SampleJob::class, $event->scene);
     }
 
-    /** @test */
+    #[Test]
     public function it_uses_the_display_name_of_a_queued_job_if_available()
     {
         $task = SampleTask::create(['title' => 'In A Nice Queue Job', 'status' => 'in-progress']);
@@ -266,7 +267,7 @@ class HistoryTest extends TestCase
         $this->assertEquals(SampleJobWithDisplayName::NICE_NAME, $event->scene);
     }
 
-    /** @test */
+    #[Test]
     public function it_can_use_a_custom_scene_resolver()
     {
         History::useSceneResolver(SampleSceneResolver::class);
@@ -278,7 +279,7 @@ class HistoryTest extends TestCase
         $this->assertEquals('Meh meh', $event->scene);
     }
 
-    /** @test */
+    #[Test]
     public function it_can_return_the_user_that_made_the_change()
     {
         $user = $this->createUser();
@@ -290,7 +291,7 @@ class HistoryTest extends TestCase
         $this->assertInstanceOf(Auth::getProvider()->getModel(), $event->user);
     }
 
-    /** @test */
+    #[Test]
     public function it_can_return_the_user()
     {
         $user = $this->createUser();
@@ -305,7 +306,7 @@ class HistoryTest extends TestCase
         }
     }
 
-    /** @test */
+    #[Test]
     public function if_there_was_no_recent_update_then_nothing_gets_logged()
     {
         $id = Str::ulid()->toBase58();

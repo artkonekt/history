@@ -14,13 +14,13 @@ declare(strict_types=1);
 
 namespace Konekt\History\Tests;
 
+use PHPUnit\Framework\Attributes\Test;
+
 class AAASmokeTest extends TestCase
 {
-    public const MIN_PHP_VERSION = '8.1.0';
+    public const MIN_PHP_VERSION = '8.3.0';
 
-    /**
-     * @test
-     */
+    #[Test]
     public function smoke()
     {
         $this->assertTrue(true);
@@ -30,8 +30,8 @@ class AAASmokeTest extends TestCase
      * Test for minimum PHP version
      *
      * @depends smoke
-     * @test
      */
+    #[Test]
     public function php_version_satisfies_requirements()
     {
         $this->assertFalse(

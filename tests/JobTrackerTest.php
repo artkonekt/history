@@ -23,11 +23,12 @@ use Konekt\History\Models\JobExecution;
 use Konekt\History\Models\JobStatus;
 use Konekt\History\Tests\Dummies\SampleTask;
 use Konekt\History\Tests\Dummies\SampleTrackableJob;
+use PHPUnit\Framework\Attributes\Test;
 use Psr\Log\LogLevel;
 
 class JobTrackerTest extends TestCase
 {
-    /** @test */
+    #[Test]
     public function it_can_create_a_job_tracking()
     {
         $task = SampleTask::create(['title' => 'Hello', 'description' => 'Make me', 'status' => 'todo']);
@@ -46,7 +47,7 @@ class JobTrackerTest extends TestCase
         $this->assertTrue(JobStatus::QUEUED()->equals($execution->status()));
     }
 
-    /** @test */
+    #[Test]
     public function it_can_create_a_job_tracking_with_a_custom_max_progress_value()
     {
         $task = SampleTask::create(['title' => 'Hello', 'description' => 'Make me', 'status' => 'todo']);
@@ -57,7 +58,7 @@ class JobTrackerTest extends TestCase
         $this->assertEquals(1341, $execution->progress_max);
     }
 
-    /** @test */
+    #[Test]
     public function it_can_record_when_starting_to_work_on_a_job()
     {
         $task = SampleTask::create(['title' => 'Hello', 'description' => 'Make me', 'status' => 'todo']);
@@ -78,7 +79,7 @@ class JobTrackerTest extends TestCase
         $this->assertTrue(JobStatus::PROCESSING()->equals($execution->status()));
     }
 
-    /** @test */
+    #[Test]
     public function it_can_record_a_successful_job_execution()
     {
         $task = SampleTask::create(['title' => 'Hello', 'description' => 'Make me', 'status' => 'todo']);
@@ -97,7 +98,7 @@ class JobTrackerTest extends TestCase
         $this->assertTrue(JobStatus::COMPLETED()->equals($execution->status()));
     }
 
-    /** @test */
+    #[Test]
     public function it_can_record_a_failed_job_execution()
     {
         $task = SampleTask::create(['title' => 'Hello', 'description' => 'Make me', 'status' => 'todo']);
@@ -117,7 +118,7 @@ class JobTrackerTest extends TestCase
         $this->assertTrue(JobStatus::FAILED()->equals($execution->status()));
     }
 
-    /** @test */
+    #[Test]
     public function it_can_log_during_execution()
     {
         $task = SampleTask::create(['title' => 'Hello', 'description' => 'Make me', 'status' => 'todo']);
@@ -135,7 +136,7 @@ class JobTrackerTest extends TestCase
         $this->assertCount(3, $logs);
     }
 
-    /** @test */
+    #[Test]
     public function the_start_job_tracking_listener_is_active()
     {
         // I wanted to test here whether the listener works well
@@ -145,7 +146,7 @@ class JobTrackerTest extends TestCase
         Event::assertListening(JobQueued::class, StartJobTracking::class);
     }
 
-    /** @test */
+    #[Test]
     public function it_emits_a_created_event_when_creating_via_the_tracker()
     {
         $task = SampleTask::create(['title' => 'Hello', 'description' => 'Make me', 'status' => 'todo']);
@@ -158,7 +159,7 @@ class JobTrackerTest extends TestCase
         Event::assertDispatched(TrackableJobCreated::class);
     }
 
-    /** @test */
+    #[Test]
     public function it_emits_a_started_event_when_starting_via_the_tracker()
     {
         $task = SampleTask::create(['title' => 'Hello', 'description' => 'Make me', 'status' => 'todo']);
@@ -173,7 +174,7 @@ class JobTrackerTest extends TestCase
         Event::assertDispatched(TrackableJobStarted::class);
     }
 
-    /** @test */
+    #[Test]
     public function it_emits_a_failed_event_when_failing_via_the_tracker()
     {
         $task = SampleTask::create(['title' => 'Hello', 'description' => 'Make me', 'status' => 'todo']);
@@ -188,7 +189,7 @@ class JobTrackerTest extends TestCase
         Event::assertDispatched(TrackableJobFailed::class);
     }
 
-    /** @test */
+    #[Test]
     public function it_emits_a_completed_event_when_completing_via_the_tracker()
     {
         $task = SampleTask::create(['title' => 'Hello', 'description' => 'Make me', 'status' => 'todo']);
@@ -203,7 +204,7 @@ class JobTrackerTest extends TestCase
         Event::assertDispatched(TrackableJobCompleted::class);
     }
 
-    /** @test */
+    #[Test]
     public function it_emits_a_log_created_event_when_logging_via_the_tracker()
     {
         $task = SampleTask::create(['title' => 'Hello', 'description' => 'Make me', 'status' => 'todo']);
@@ -219,7 +220,7 @@ class JobTrackerTest extends TestCase
         Event::assertDispatched(TrackableJobLogCreated::class);
     }
 
-    /** @test */
+    #[Test]
     public function it_records_the_authenticated_user()
     {
         $task = SampleTask::create(['title' => 'Hello', 'description' => 'Make me', 'status' => 'todo']);
@@ -237,7 +238,7 @@ class JobTrackerTest extends TestCase
         $this->assertInstanceOf(Auth::getProvider()->getModel(), $execution->getUser());
     }
 
-    /** @test */
+    #[Test]
     public function the_user_is_null_when_created_as_unauthenticated()
     {
         $task = SampleTask::create(['title' => 'Hello', 'description' => 'Make me', 'status' => 'todo']);

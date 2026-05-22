@@ -17,10 +17,11 @@ namespace Konekt\History\Tests;
 use Konekt\History\History;
 use Konekt\History\Tests\Dummies\SampleTrackableClient;
 use Konekt\History\Tests\Dummies\SampleTrackableProduct;
+use PHPUnit\Framework\Attributes\Test;
 
 class TrackableTest extends TestCase
 {
-    /** @test */
+    #[Test]
     public function list_of_fields_to_include_can_be_specified()
     {
         $product = SampleTrackableProduct::create(['name' => 'Something', 'price' => 100, 'is_active' => true, 'category' => 'Toulouse']);
@@ -37,7 +38,7 @@ class TrackableTest extends TestCase
         $this->assertArrayNotHasKey('category', $event->diff()->changes());
     }
 
-    /** @test */
+    #[Test]
     public function trackable_classes_can_customize_the_summary()
     {
         $product = SampleTrackableProduct::create(['name' => 'Something', 'price' => 19, 'is_active' => true, 'category' => 'Toulouse']);
@@ -61,8 +62,7 @@ class TrackableTest extends TestCase
         $this->assertEquals('Activated', $event->summary());
     }
 
-    /** @test */
-    public function list_of_fields_to_exclude_can_be_specified()
+    #[Test] public function list_of_fields_to_exclude_can_be_specified()
     {
         $product = SampleTrackableClient::create(['name' => 'Copy Paste Ltd', 'country' => 'CA', 'api_key' => 'secret']);
 
