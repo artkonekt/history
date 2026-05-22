@@ -17,6 +17,7 @@ namespace Konekt\History\Tests;
 use Konekt\History\History;
 use Konekt\History\Tests\Dummies\SampleTrackableClient;
 use Konekt\History\Tests\Dummies\SampleTrackableProduct;
+use Konekt\History\Tests\Dummies\SampleTrackableWithDefaultRedact;
 use PHPUnit\Framework\Attributes\Test;
 
 class TrackableTest extends TestCase
@@ -70,5 +71,39 @@ class TrackableTest extends TestCase
 
         $this->assertEquals(2, $event->diff()->changeCount());
         $this->assertArrayNotHasKey('api_key', $event->diff()->changes());
+    }
+
+
+    #[Test] public function it_does_not_redact_field_values_if_redact_in_history_returns_false()
+    {
+        $product = SampleTrackableWithDefaultRedact::create(['name' => 'Copy Paste Ltd', 'country' => 'CA', 'api_key' => 'not so secret']);
+
+        $event = History::begin($product);
+
+        $this->assertEquals('CA', $event->diff()->changeOf('country')->new);
+    }
+
+    #[Test] public function it_redacts_with_the_default_redactor_if_redact_in_history_returns_true()
+    {
+        $product = SampleTrackableWithDefaultRedact::create(['name' => 'Copy Paste Ltd', 'country' => 'CA', 'api_key' => 'not so secret']);
+
+        $event = History::begin($product);
+
+        $this->assertEquals('******', $event->diff()->changeOf('api_key')->new);
+    }
+
+    #[Test] public function it_redacts_with_the_closure_if_redact_in_history_returns_a_closure()
+    {
+        $product = SampleTrackableWithDefaultRedact::create(['name' => 'Copy Paste Ltd', 'country' => 'CA', 'api_key' => 'not so secret']);
+
+        $event = History::begin($product);
+
+        $this->assertEquals('REDACTED', $event->diff()->changeOf('name')->new);
+
+        $product->update(['name' => '42']);
+
+        $event2 = History::logRecentUpdate($product);
+
+        $this->assertEquals('The meaning of life', $event2->diff()->changeOf('name')->new);
     }
 }

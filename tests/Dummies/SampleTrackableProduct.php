@@ -48,4 +48,9 @@ class SampleTrackableProduct extends Model implements Trackable
     {
         return null;
     }
+
+    public function redactInHistory(string $field, mixed $value): bool|\Closure
+    {
+        return false;
+    }
 }

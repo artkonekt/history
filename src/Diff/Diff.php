@@ -49,7 +49,7 @@ class Diff implements Arrayable
 
         foreach ($changedAttributes as $field => $newValue) {
             if (!in_array($field, $ignore)) {
-                $changes[$field] = ['n' => $newValue];
+                $changes[$field] = ['n' => self::redact($model, $field, $newValue)];
                 if (null !== $before && array_key_exists($field, $before)) {
                     $changes[$field]['o'] = $before[$field];
                 }
@@ -78,6 +78,22 @@ class Diff implements Arrayable
         }
 
         return new self($changes);
+    }
+
+    private static function redact(Model $model, string $field, mixed $value): mixed
+    {
+        if ($model instanceof Trackable) {
+            $redactor = $model->redactInHistory($field, $value);
+            if (is_callable($redactor)) {
+                return $redactor($value);
+            }
+
+            if (true === $redactor) { // The default redactor
+                return null === $value ? null : '******';
+            }
+        }
+
+        return $value;
     }
 
     public function hasChanged(string $field): bool

@@ -2,28 +2,17 @@
 
 declare(strict_types=1);
 
-/**
- * Contains the SampleTrackableClient class.
- *
- * @copyright   Copyright (c) 2023 Attila Fulop
- * @author      Attila Fulop
- * @license     MIT
- * @since       2023-11-14
- *
- */
-
 namespace Konekt\History\Tests\Dummies;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Konekt\History\Contracts\ModelHistoryEvent;
 use Konekt\History\Contracts\Trackable;
 
-class SampleTrackableClient extends Model implements Trackable
+class SampleTrackableWithDefaultRedact extends Model implements Trackable
 {
-    use SoftDeletes;
-
     protected $guarded = ['id'];
+
+    protected $table = 'sample_trackable_clients';
 
     public function generateHistoryEventSummary(ModelHistoryEvent $event): ?string
     {
@@ -37,11 +26,15 @@ class SampleTrackableClient extends Model implements Trackable
 
     public function excludeAttributesFromHistory(): ?array
     {
-        return ['api_key'];
+        return null;
     }
 
     public function redactInHistory(string $field, mixed $value): bool|\Closure
     {
-        return false;
+        return match($field) {
+            'name' => fn ($v) => '42' === $v ? 'The meaning of life' : 'REDACTED',
+            'api_key' => true,
+            default => false,
+        };
     }
 }

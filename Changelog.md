@@ -1,5 +1,13 @@
 # Eloquent History Changelog
 
+## Unreleased
+##### 2026-XX-YY
+
+- BC: Added the `redactInHistory()` method to the `Trackable` interface
+- Added the possibility to redact sensitive fields in the history diffs
+
+---
+
 ## 1.10.0
 ##### 2026-04-17
 

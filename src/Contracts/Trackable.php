@@ -21,4 +21,6 @@ interface Trackable
     public function includeAttributesInHistory(): ?array;
 
     public function excludeAttributesFromHistory(): ?array;
+
+    public function redactInHistory(string $field, mixed $value): bool|\Closure;
 }
