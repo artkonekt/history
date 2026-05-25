@@ -56,7 +56,7 @@ class History
 
     public static function logRecentUpdate(Model $model, ?string $comment = null): ?ModelHistoryEvent
     {
-        $diff = Diff::fromModel($model);
+        $diff = Diff::fromModel($model); // @todo Check if we can use Mode::getPrevious() instead of getOriginal()
         if ($diff->isEmpty()) {
             return null;
         }
