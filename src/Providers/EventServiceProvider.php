@@ -15,4 +15,8 @@ class EventServiceProvider extends ServiceProvider
             StartJobTracking::class,
         ],
     ];
+
+    protected function configureEmailVerification(): void
+    {
+    }
 }
